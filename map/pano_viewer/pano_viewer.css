@@ -1,0 +1,47 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+#panorama {
+    position: fixed;
+    z-index: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+footer {
+    position: absolute;
+    height: 5vh;
+    width: 100vw;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 20px;
+    font-size: 2vh;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#share{
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 4vh;
+    height: 4vh;
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid white;
+    right: 1vh;
+    transition: background-color .5s;
+}
+
+#share:hover{
+    background-color: rgba(252, 252, 252, 0.5);
+}

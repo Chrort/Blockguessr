@@ -1,0 +1,77 @@
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+body{
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: #fafafa;
+    background: linear-gradient(104deg,rgba(250, 250, 250, 1) 0%, rgba(164, 213, 224, 1) 100%);
+}
+
+main{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 50px;
+}
+
+h1{
+    font-size: 3em;
+    box-shadow: 0 0 5px black; 
+    padding: 10px;
+    border-radius: 10px;
+    min-width: 30%;
+    text-align: center;
+}
+
+h2{
+    font-size: 2em;
+    box-shadow: 0 0 5px black; 
+    padding: 10px;
+    border-radius: 10px;
+}
+
+table{
+    display: table;
+    width: 80%;
+    box-shadow: 0 0 5px black; 
+    padding: 10px;
+    border-radius: 10px;
+}
+
+th{
+    font-size: 2.5em;
+}
+
+td{
+    font-size: 1.8em;
+    padding: 5px;
+    border-top: 1px solid black;
+    text-align: center;
+}
+
+#exitToStartpage{
+    width: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    font-size: 3em;
+    box-shadow: 0 0 5px black; 
+    padding: 10px;
+    border-radius: 10px;
+    transition: box-shadow .4s;
+}
+
+#exitToStartpage:hover{
+    box-shadow: 0 0 15px black; 
+}

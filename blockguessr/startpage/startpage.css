@@ -1,0 +1,229 @@
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+html{
+    min-height: 100%;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+html::-webkit-scrollbar{
+    display: none;
+}
+
+body{
+    width: 100%;
+    min-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+main{
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+}
+
+#helloText{
+    font-size: 3.5em;
+}
+
+#provinceMaps, #otherMaps{
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.mapsText{
+    width: 100%;
+    display: flex;
+    flex-direction: row;    
+    justify-content: center;    
+    align-items: center;
+}
+
+.line{
+    color: black;
+    width: 100vw;
+    border: 1px solid;
+}
+
+.mapsText > h1{
+    white-space: nowrap;
+    text-align: center;
+    font-size: 2.5em;
+    padding: 20px;
+    text-shadow: 0 0 6px rgb(255, 255, 255);
+}
+
+.map{
+    position: relative;
+    width: 420px;
+    height: 240px;
+    border-radius: 30px;
+    background-color: rgba(121, 121, 121, 0.5);
+    box-shadow: 0 0 10px black;
+    margin: 20px;
+}
+
+.mapName{
+    font-size: 45px;
+    position: absolute;
+    margin: 20px;
+}
+
+.mapLocations{
+    display: flex;
+    align-items: center;
+    font-size: 30px;
+    position: absolute;
+    margin: 20px;
+    bottom: 40px;
+}
+
+.mapHighscore{
+    display: flex;
+    align-items: center;
+    font-size: 30px;
+    position: absolute;
+    margin: 20px;
+    bottom: 0;
+}
+
+.map > form > input[type=submit]{
+    cursor: pointer;
+    position: absolute;
+    margin: 20px;
+    width: 120px;
+    height: 40px;
+    font-size: 25px;
+    border: none;
+    box-shadow: 0 0 10px black;
+    right: 0;
+    bottom: 0;
+    background-color: rgb(21, 161, 21);
+    border-radius: 10px;
+    transition: scale .5s;
+}
+
+.map > form > input[type=submit]:hover{
+    scale: 1.1;
+}
+
+#loadingScreenDiv{
+    z-index: 4;
+    width: 100vw;
+    height: 100vh;
+    transform: translateY(calc((20px + 6vh) * -1));
+    position: fixed;
+    background: #fafafa;
+    background: linear-gradient(104deg,rgba(250, 250, 250, 1) 0%, rgba(164, 213, 224, 1) 100%);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 3em;
+}
+
+#panorama{
+    position: fixed;
+    z-index: 0;
+    width: 100vw;
+    height: 100vh;
+    transform: translateY(-6vh);
+}
+
+.noBorder{
+    border: none;
+}
+
+.bronzeBorder::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 8px;
+    border-radius: inherit;
+
+    background: linear-gradient(127deg,rgba(223, 129, 70, 1) 2%, rgba(223, 130, 71, 1) 42%, rgba(252, 226, 207, 1) 77%, rgba(226, 133, 74, 1) 100%);
+
+    mask-image:
+        linear-gradient(#000 0 0),
+        linear-gradient(#000 0 0);
+    mask-mode: match-source, match-source;
+    mask-repeat: no-repeat;
+    mask-origin: content-box, border-box;
+    mask-clip: content-box, border-box;
+
+    mask-composite: exclude;
+}
+
+
+.silverBorder::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 8px;
+    border-radius: inherit;
+
+    background: linear-gradient(127deg,rgb(207, 207, 207) 2%, rgba(226, 226, 226, 1) 42%, rgba(247, 247, 247, 1) 77%, rgba(204, 204, 204, 1) 100%);
+
+    mask-image:
+        linear-gradient(#000 0 0),
+        linear-gradient(#000 0 0);
+    mask-mode: match-source, match-source;
+    mask-repeat: no-repeat;
+    mask-origin: content-box, border-box;
+    mask-clip: content-box, border-box;
+
+    mask-composite: exclude;
+}
+
+
+.goldBorder::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 8px;
+    border-radius: inherit;
+
+    background: linear-gradient(127deg,rgba(234, 192, 62, 1) 2%, rgba(235, 188, 44, 1) 42%, rgba(252, 249, 207, 1) 77%, rgba(249, 204, 68, 1) 100%);
+
+    mask-image:
+        linear-gradient(#000 0 0),
+        linear-gradient(#000 0 0);
+    mask-mode: match-source, match-source;
+    mask-repeat: no-repeat;
+    mask-origin: content-box, border-box;
+    mask-clip: content-box, border-box;
+
+    mask-composite: exclude;
+}
+
+.platinBorder::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 8px;
+    border-radius: inherit;
+
+    background: linear-gradient(127deg,rgba(85, 219, 246, 1) 2%, rgba(66, 201, 232, 1) 42%, rgb(205, 237, 237) 75%, rgba(46, 182, 217, 1) 100%);
+
+    mask-image:
+        linear-gradient(#000 0 0),
+        linear-gradient(#000 0 0);
+    mask-mode: match-source, match-source;
+    mask-repeat: no-repeat;
+    mask-origin: content-box, border-box;
+    mask-clip: content-box, border-box;
+
+    mask-composite: exclude;
+}

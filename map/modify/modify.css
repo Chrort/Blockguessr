@@ -1,0 +1,233 @@
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+header{
+    position: relative;
+    height: 6vh;
+    box-shadow: 0 0 10px 10px black;
+    font-size: 5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    z-index: 2;
+    background-color: rgba(240, 248, 255, 1);
+}
+
+body{
+    width: 100vw;
+    height: 100vh;
+}
+
+main{
+    background: #f0ebeb;
+    background: radial-gradient(circle,rgba(240, 235, 235, 1) 0%, rgba(240, 248, 255, 1) 0%, rgba(245, 245, 245, 1) 100%);
+    width: 100%;
+    height: 94vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 50px;
+}
+
+#goBack{
+    cursor: pointer;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 20px;
+    width: 5vh;
+    height: 5vh;
+    border-radius: 50%;
+    box-shadow: 0 0 5px black; 
+}
+
+#goBack:hover{
+    border: 1px solid black;
+}
+
+table{
+    display: table;
+    width: 100%;
+    border-radius: 25px;
+}
+
+th{
+    font-size: 3em;
+    width: calc(100% / 6);
+}
+
+td{
+    font-size: 1.3em;
+    border-top: 1px solid black;
+    padding: 5px;
+    text-align: center;
+}
+
+.addForms{
+    height: 85%;
+}
+
+fieldset{
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 2em;
+    gap: 20px;
+    border: none;
+}
+
+#addSubmit{
+    cursor: pointer;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 1em;
+    padding: 5px;
+    border-radius: 10px;
+    background-color: rgba(33, 176, 33, .6);
+    transition: background-color .5s;
+}
+
+#addSubmit:hover{
+    background-color: rgba(33, 240, 33, .8);
+}
+
+.formI{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+    width: 100%;
+}
+
+.addI{
+    line-height: 2em;
+}
+
+.error{
+    color: red;
+}
+
+.deleteBtn{
+    cursor: pointer;
+    font-size: 1.2em;
+    background-color: rgba(186, 41, 41, .6);
+    padding: 5px;
+    margin: 5px;
+    border-radius: 10px;
+    transition: background-color .5s;
+}
+
+.deleteBtn:hover{
+    background-color: rgba(250, 41, 41, .8);
+}
+
+#topPage{
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    gap: 40px;
+    margin-bottom: 40px;
+    height: 370px;
+}
+
+.stat{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+}
+
+#header{
+    font-size: 1.4em !important;
+    font-weight: bolder;
+}
+
+#total{
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+#stats{
+    height: 100%;
+    width: calc(50% - 20px);
+    font-size: 2em;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+
+#forms{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    height: 100%;
+    width: calc(50% - 20px);
+}
+
+#forms, #stats, #tables{
+    background-color: rgb(226, 226, 226);
+    border-radius: 25px;
+    box-shadow: 0 0 5px 5px;
+}
+
+#switchForm{
+    height: 60px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.selectForm{
+    width: calc(100% / 3);
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.3em;
+    cursor: pointer;
+    transition: background-color .5s;
+    border-bottom: 1px solid;
+}
+
+.selectTable{
+    width: calc(100% / 3);
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.3em;
+    cursor: pointer;
+    transition: background-color .5s;
+    border-bottom: 1px solid;
+}
+
+#selectLabel, #labelTableSwitch{
+    background-color: rgb(195, 189, 189);
+    border-radius: 25px 0 0 0 !important;
+}
+
+#selectStreet, #streetTableSwitch{
+    border-radius: 0 25px 0 0 !important;
+}
+
+#switchTable{
+    height: 60px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}

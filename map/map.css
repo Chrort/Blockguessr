@@ -1,0 +1,365 @@
+/* z-index->
+//  2 -> .mapCanvas, .mapImg
+//  3 -> #settings, #map
+//  4 -> .cleanBorder
+//  5 -> header, canvas, #result, #escape, #copyCoords, #coords, #mapType
+//  6 -> .borderSvg, #panoramaDivContainer
+//  7 -> #streetLabelDivContainer
+//  8 -> .panoLink, .labelDiv, .pointLabel
+*/
+
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+header{
+    position: relative;
+    height: 6vh;
+    box-shadow: 0 0 10px 10px black;
+    font-size: 5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    z-index: 5;
+    background-color: rgba(240, 248, 255, 1);
+}
+
+body{
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+canvas{
+    pointer-events: none;
+    position: absolute;
+    z-index: 5;
+    background-color: transparent;
+}
+
+main{
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.borderSvg{
+    pointer-events: none;
+    position: absolute;
+    z-index: 6;
+}
+
+.borderPolyline{
+    stroke-width: 10;
+    stroke-dasharray: 3 2;
+}
+
+#goBack{
+    cursor: pointer;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 20px;
+    width: 5vh;
+    height: 5vh;
+    border-radius: 50%;
+    box-shadow: 0 0 5px black; 
+}
+
+#goBack:hover{
+    border: 1px solid black;
+}
+
+#settings{
+    cursor: pointer;
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+    right: 20px;
+    bottom: 20px;
+    scale: 1.8;
+    transition: transform 1s;
+}
+
+#settingsContainer{
+    position: fixed;
+    display: flex;
+    right: 0;
+    bottom: 0;
+    z-index: 4;
+    padding: 15px;
+    width: 67px;
+    height: 67px; 
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    background-color: rgba(240, 248, 255, 1);
+    box-shadow: 0 0 5px 5px;
+    border-radius: 10px 0 0 0;
+    transition: width .7s, height .7s;
+}
+
+#settingsContainer>div>form>input[type=submit]{
+    cursor: default;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    text-decoration: none;
+    font-size: 24px;
+    margin: 0;
+    color: black;
+    padding: 5px;
+    border-radius: 10px;
+    background-color: rgb(188, 220, 229);
+    transition: background-color .4s;
+}
+
+#settingsContainer>div>form>input[type=submit]:hover{
+    background-color: rgb(198, 220, 239);
+}
+
+#settingsContainer>div{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;  
+    padding-left: 10px;
+}
+
+#modifyLinkDiv{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+#pwdForm{
+    width: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    padding: 5px;
+}
+
+#pwd{
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    text-decoration: none;
+    font-size: 24px;
+    margin: 0;
+    color: black;
+    border: 1px solid;
+    padding: 5px;
+    border-radius: 10px;
+    transition: background-color .4s;
+    display: none;
+}
+
+pwd:hover{
+    background-color: rgb(198, 220, 239);
+}
+
+.labelCheckbox{
+    font-size: 1.5em;
+    margin: 5px 5px 5px 0;
+    display: none;
+}
+
+.inputCheckbox{
+    cursor: pointer;
+    scale: 1.5;
+    margin: 5px 0 5px 5px;
+    display: none;
+}
+
+#measureArea, #measureDistance{
+    cursor: pointer;
+    display: none;
+    gap: 13px;
+}
+
+.pointLabels{
+    color: blue;
+    scale: 4;
+    position: absolute;
+    z-index: 8;
+}
+
+.mapCanvas{
+    position: relative;
+    justify-self: stretch;
+    scale: 1;
+    z-index: 2;
+    width: 512px;
+    height: 512px;
+    border: 0;
+    font-size: 0;
+}
+
+.mapImgs{
+    pointer-events: none;
+    image-rendering: pixelated;
+    z-index: 2;
+    border: 0;
+    display: block;
+}
+
+.labelDiv{
+    position: absolute;
+    pointer-events: none;
+    font-size: 10px;
+    color: black;
+    z-index: 8;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: .5px;
+    padding: 0 .5px 0;
+}
+
+#map{
+    width: calc(10 * 512px);
+    height: calc(10 * 512px);
+    position: absolute;
+    scale: .25;
+    z-index: 3;
+    display: grid;
+    gap: 0;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+}
+
+.cleanBorder{
+    pointer-events: none;
+    z-index: 4;
+    background-color: rgb(255, 255, 255);
+    position: absolute;
+}
+
+#cB1{
+    top: 0;
+    width: 100%;
+    height: 330px;
+    transform: translateY(-2px);
+    border: 1px solid rgba(255, 166, 0, 0);
+}
+
+#cB2{
+    right: 0;
+    height: 100%;
+    width: 201px;
+    transform: translateX(2px);
+}
+
+#cB3{
+    bottom: 0;
+    width: 100%;
+    height: 331px;
+    transform: translateY(2px);
+}
+
+#cB4{
+    left: 0;
+    height: 100%;
+    width: 460px;
+    transform: translateX(-2px);
+}
+
+#coords{
+    position: fixed !important;
+    bottom: 15px;
+}
+
+#mapType{
+    cursor: pointer;
+    position: fixed;
+    background-color: rgba(240, 248, 255, 1);
+    border-radius: 0 10px 0 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    box-shadow: 0 0 5px 5px;
+    width: 67px;
+    height: 67px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#mapType>svg{
+    scale: 1.8;
+    display: block;
+    transition: transform 1s;
+}
+
+#escape{
+    top: 15px;
+    display: none;
+}
+
+#copyCoords{
+    top: 75px;
+    display: none;
+    cursor: pointer;
+}
+
+#result{
+    top: 45px;
+    display: none;
+}
+
+#result, #escape, #copyCoords, #coords{
+    position: absolute;
+    z-index: 5;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 4px;
+    padding: 2px;
+}
+
+#streetLabelDivContainer, #panoramaDivContainer{
+    position: absolute;
+    z-index: 7;
+    width: 100%;
+    height: 100%;
+}
+
+.streetLabel{
+    position: absolute;
+    transform: translateY(-50%) translateX(-50%);
+    line-height: normal;
+}
+
+.streetPolyline{
+    visibility: hidden;
+}
+
+.panoLink{
+    pointer-events: all;
+    z-index: 8;
+    position: absolute;
+    display: block;
+    width: 10px;
+    height: 10px;
+    transform-origin: center;
+    transform: translate(-5px, -5px) scale(1);
+    border-radius: 50%;
+    background-color: rgba(180, 247, 247, 0.4);
+    border: 1px solid rgba(146, 255, 255, 0.8);
+}
+
+.panoLink:hover{
+    cursor: pointer;
+    background-color: rgba(180, 247, 247, 0.8);
+}
