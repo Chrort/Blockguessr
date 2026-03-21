@@ -61,6 +61,11 @@ th{
     width: calc(100% / 6);
 }
 
+th > a{
+    color: black;
+    text-decoration: none;
+}
+
 td{
     font-size: 1.3em;
     border-top: 1px solid black;

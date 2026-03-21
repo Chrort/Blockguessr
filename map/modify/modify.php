@@ -7,6 +7,12 @@ if ($_SESSION['modify'] !== true) {
     exit;
 }
 
+$order = $_GET["or"] ?? "ASC";
+$sortLabels = $_GET["sl"] ?? "name";
+$sortBorders = $_GET["sb"] ?? "name";
+$sortStreets = $_GET["ss"] ?? "name";
+$order == "ASC" ? $order = "DESC" : $order = "ASC";
+
 //acces files
 
 require_once '../../config/db_connect.php';
@@ -32,9 +38,9 @@ $colorStreet = '#000000';
 
 //get data
 
-$elements = getLabels($conn);
-$borders = getBorders($conn);
-$streets = getStreets($conn);
+$elements = getLabels($conn, $sortLabels, $order);
+$borders = getBorders($conn, $sortBorders, $order);
+$streets = getStreets($conn, $sortStreets, $order);
 
 //call functions
 
@@ -368,12 +374,12 @@ function countLabels($elements)
             <table class="table" id="labelTable">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>X</th>
-                        <th>Y</th>
-                        <th>Type</th>
-                        <th>ID</th>
-                        <th>DeleteHard</th>
+                        <th><a href="./modify.php?sl=name&or=<?= $order ?>">Name</a></th>
+                        <th><a href="./modify.php?sl=x&or=<?= $order ?>">X</a></th>
+                        <th><a href="./modify.php?sl=y&or=<?= $order ?>">Y</a></th>
+                        <th><a href="./modify.php?sl=type&or=<?= $order ?>">Type</a></th>
+                        <th><a href="./modify.php?sl=id&or=<?= $order ?>">ID</a></th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -396,8 +402,8 @@ function countLabels($elements)
             <table class="table" id="borderTable">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>ID</th>
+                        <th><a href="./modify.php?sb=name&or=<?= $order ?>">Name</a></th>
+                        <th><a href="./modify.php?sb=id&or=<?= $order ?>">ID</a></th>
                         <th>Delete</th>
                     </tr>
                 </thead>
@@ -418,9 +424,9 @@ function countLabels($elements)
             <table class="table" id="streetTable">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Color</th>
-                        <th>ID</th>
+                        <th><a href="./modify.php?ss=name&or=<?= $order ?>">Name</a></th>
+                        <th><a href="./modify.php?ss=color&or=<?= $order ?>">Color</a></th>
+                        <th><a href="./modify.php?ss=id&or=<?= $order ?>">ID</a></th>
                         <th>Delete</th>
                     </tr>
                 </thead>

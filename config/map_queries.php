@@ -1,25 +1,25 @@
 <?php
 
 //get labels
-function getLabels(mysqli $conn): array
+function getLabels(mysqli $conn, string $sort = "name", string $order = "ASC"): array
 {
-    $sql = "SELECT * FROM maplabels ORDER BY name ASC";
+    $sql = "SELECT * FROM maplabels ORDER BY $sort $order";
     $elements = mysqli_fetch_all(mysqli_query($conn, $sql), MYSQLI_ASSOC);
     return $elements;
 }
 
 //get borders
-function getBorders(mysqli $conn): array
+function getBorders(mysqli $conn, string $sort = "name", string $order = "ASC"): array
 {
-    $sql = "SELECT * FROM mapborders ORDER BY name ASC";
+    $sql = "SELECT * FROM mapborders ORDER BY $sort $order";
     $borders = mysqli_fetch_all(mysqli_query($conn, $sql), MYSQLI_ASSOC);
     return $borders;
 }
 
 //get streets
-function getStreets(mysqli $conn): array
+function getStreets(mysqli $conn, string $sort = "name", string $order = "ASC"): array
 {
-    $sql = "SELECT * FROM mapstreets ORDER BY name ASC";
+    $sql = "SELECT * FROM mapstreets ORDER BY $sort $order";
     $streets = mysqli_fetch_all(mysqli_query($conn, $sql), MYSQLI_ASSOC);
     return $streets;
 }
