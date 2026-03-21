@@ -1,12 +1,15 @@
 <?php
 
+require_once '../../config/login_queries.php';
+require_once '../../config/db_connect.php';
+
 $username = $_SESSION["username"];
+$role = getUserData($username, $conn)[0][5];
 
 function getFirstLetter($string)
 {
     return substr($string, 0, 1);
 }
-
 
 ?>
 
@@ -22,8 +25,10 @@ function getFirstLetter($string)
         <div id="dropdown">
             <a href="../startpage/startpage.php" class="dropdownElement firstElement">Startpage</a>
             <a href="../profile/profile.php" class="dropdownElement">Profile</a>
-            <a href="../addPano/add_pano.php" class="dropdownElement">Add Panorama</a>
-            <a href="../deletePano/deletePano.php" class="dropdownElement">Delete Panorama</a>
+            <?php if ($role == "admin"): ?>
+                <a href="../addPano/add_pano.php" class="dropdownElement">Add Panorama</a>
+                <a href="../deletePano/deletePano.php" class="dropdownElement">Delete Panorama</a>
+            <?php endif; ?>
             <a href="../startpage/logout.php" class="dropdownElement lastElement" id="logout">Logout</a>
         </div>
     </nav>

@@ -1,21 +1,23 @@
 <?php
 
+session_start();
+set_time_limit(0);
+
 require __DIR__ . '/../../config/db_connect.php';
+require __DIR__ . '/../../config/login_queries.php';
 require __DIR__ . '/../../api/pano_data.php';
 require __DIR__ . '/../../api/world_data.php';
 
-set_time_limit(0);
+$username = $_SESSION['username'];
+$role = getUserData($username, $conn)[0][5];
 
-session_start();
-if (!$_SESSION['loggedIn']) {
+if (!$_SESSION['loggedIn'] || $role != "admin") {
     header("Location: ../login/login.php");
     exit();
 }
 
 $panoData = getPanoData($conn);
 $maps = getWorldData($conn, NULL);
-
-$username = $_SESSION['username'];
 
 if (isset($_POST["submit"])) {
     if (empty($_POST["id"])) {

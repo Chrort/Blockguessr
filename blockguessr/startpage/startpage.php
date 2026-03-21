@@ -1,6 +1,7 @@
 <?php
 
 session_start();
+
 if (!$_SESSION['loggedIn']) {
     header("Location: ../login/login.php");
     exit();
@@ -48,7 +49,6 @@ function getClass($score)
             return "noBorder";
     }
 }
-
 ?>
 
 <!DOCTYPE html>

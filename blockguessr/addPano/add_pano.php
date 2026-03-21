@@ -1,17 +1,20 @@
 <?php
 
+session_start();
 set_time_limit(0);
 
-session_start();
-if (!$_SESSION['loggedIn']) {
+require __DIR__ . '/../../api/upload_pano.php';
+require __DIR__ . '/../../config/login_queries.php';
+require __DIR__ . '/../../config/db_connect.php';
+
+$username = $_SESSION['username'];
+$role = getUserData($username, $conn)[0][5];
+
+if (!$_SESSION['loggedIn'] || $role != "admin") {
     header("Location: ../login/login.php");
     exit();
 }
 
-require __DIR__ . '/../../api/upload_pano.php';
-require __DIR__ . '/../../config/db_connect.php';
-
-$username = $_SESSION['username'];
 $provinceAbbr = $_SESSION['provinceAbbr'] ?? "";
 
 $provinceAbbrevations = array(

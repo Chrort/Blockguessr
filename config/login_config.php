@@ -1,6 +1,6 @@
 <?php
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if (isset($_POST["submit"]) && $_POST["submit"] == "Login") {
 
     session_start();
 
@@ -12,10 +12,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $_SESSION["username"] = $username;
     $_SESSION["pwd"] = $pwd;
 
+
     require_once './login_queries.php';
     require_once './db_connect.php';
 
     // ERROR HANDLERS
+
 
     if (empty($username) || empty($pwd)) {
         $_SESSION["error"] = "Missing input";
@@ -39,16 +41,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $_SESSION["email"] = $userData[2];
     $_SESSION["pwd"] = $pwd;
     $_SESSION["date"] = $userData[4];
+    $_SESSION["role"] = $userData[5];
 
     $_SESSION['loggedIn'] = true;
     header("Location: ../blockguessr/startpage/startpage.php");
     exit();
 } else {
+    $_SESSION["error"] = "Unauthorized";
     goBack();
 }
-
 function goBack()
 {
-    header("Location: ../blockguessr/login/login.php?failed");
+    $error = $_SESSION['error'] ?? "";
+    header("Location: /serverMap/blockguessr/login/login.php?error=$error");
     exit();
 }

@@ -42,7 +42,7 @@ $pwd = $_SESSION["pwd"] ?? "";
                 echo "<p> $error </p>";
                 unset($_SESSION["error"]);
             } ?>
-            <button type="submit" name="submit" id="submit">Login</button>
+            <input type="submit" name="submit" id="submit" value="Login">
         </form>
         <h4>Don't have an account? <a href="../register/register.php">Register</a></h4>
     </main>
