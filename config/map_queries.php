@@ -24,6 +24,14 @@ function getStreets(mysqli $conn, string $sort = "name", string $order = "ASC"):
     return $streets;
 }
 
+//get polygons
+function getPolygons(mysqli $conn, string $sort = "name", string $order = "ASC"): array
+{
+    $sql = "SELECT * FROM mappolygons ORDER BY $sort $order";
+    $polygons = mysqli_fetch_all(mysqli_query($conn, $sql), MYSQLI_ASSOC);
+    return $polygons;
+}
+
 //insert label
 function modifyData(mysqli $conn, string $sql): void
 {

@@ -20,6 +20,7 @@ let streetDataArray = [];
 let locations = [];
 
 let pinIsDown = false;
+let movedMap = false;
 let locScreen = true;
 let currentRound = 0;
 let minScale;
@@ -137,7 +138,10 @@ const guess = () => {
   adaptIdLine();
   adjustPins();
 
-  document.getElementById("nextRoundBtn").addEventListener("click", spaceEvent);
+  guessContainer.style.width = "300px";
+  guessContainer.style.height = "345px";
+
+  document.getElementById("nextRoundBtn").addEventListener("click", btnAction);
 
   idLine.setAttribute("x1", d[1]);
   idLine.setAttribute("y1", d[2]);
@@ -233,18 +237,20 @@ const nextRound = () => {
         })
 }
 
-const spaceEvent = e => {
-  if(e.code != "Space") return;
+const spaceEvent = (e) => {
+  if(e.code == "Space") btnAction();
+}
 
+const btnAction = () => {
   if(locScreen && pinIsDown){
-    guess();
-  }else if(currentRound >= 4 && locScreen == false){
-    localStorage.setItem("totalP", totalPoints);
-    localStorage.setItem("roundData", JSON.stringify(roundData));
-    window.location.href = "./summary.php";
-  }else if(!locScreen && currentRound < 4){
-    nextRound();
-  }
+      guess();
+    }else if(currentRound >= 4 && locScreen == false){
+      localStorage.setItem("totalP", totalPoints);
+      localStorage.setItem("roundData", JSON.stringify(roundData));
+      window.location.href = "./summary.php";
+    }else if(!locScreen && currentRound < 4){
+      nextRound();
+    }
 }
 
 const genMap = type => {
@@ -500,6 +506,7 @@ const adaptSize = () => {
 }
 
 const setPin = e => {
+  if(movedMap) return;
   if(locScreen){
     let x = getMousePos(e, currentZoomLevel).x;
     let y = getMousePos(e, currentZoomLevel).y;

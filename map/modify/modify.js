@@ -16,6 +16,9 @@ const setup = () => {
     }else if(localStorage.getItem("selectedForm") == "street"){
         document.getElementById("streetForm").style.display = "flex";
         document.getElementById("selectStreet").style.backgroundColor = "rgb(195, 189, 189)";
+    }else if(localStorage.getItem("selectedForm") == "poly"){
+        document.getElementById("polyForm").style.display = "flex";
+        document.getElementById("selectPoly").style.backgroundColor = "rgb(195, 189, 189)";
     }else{
         document.getElementById("labelForm").style.display = "flex";
         document.getElementById("selectLabel").style.backgroundColor = "rgb(195, 189, 189)";
@@ -28,6 +31,9 @@ const setup = () => {
     }else if(localStorage.getItem("selectedTable") == "street"){
         document.getElementById("streetTable").style.display = "table";
         document.getElementById("streetTableSwitch").style.backgroundColor = "rgb(195, 189, 189)";
+    }else if(localStorage.getItem("selectedTable") == "poly"){
+        document.getElementById("polyTable").style.display = "table";
+        document.getElementById("polyTableSwitch").style.backgroundColor = "rgb(195, 189, 189)";
     }else{
         document.getElementById("labelTable").style.display = "table";
         document.getElementById("labelTableSwitch").style.backgroundColor = "rgb(195, 189, 189)";
@@ -46,7 +52,6 @@ const deselectAllForms = () => {
 
 const deselectAllTables = () => {
     [].forEach.call(tables, (e) => {
-        console.log("h")
         e.style.display = "none";
     });
 
@@ -72,6 +77,11 @@ const changeForm = id => {
             document.getElementById("streetForm").style.display = "flex";
             document.getElementById("selectStreet").style.backgroundColor = "rgb(195, 189, 189)";
             localStorage.setItem("selectedForm", "street");
+            break;
+        case "selectPoly":
+            document.getElementById("polyForm").style.display = "flex";
+            document.getElementById("selectPoly").style.backgroundColor = "rgb(195, 189, 189)";
+            localStorage.setItem("selectedForm", "poly");
     }
 }
 
@@ -92,5 +102,10 @@ const changeTable = id => {
             document.getElementById("streetTable").style.display = "table";
             document.getElementById("streetTableSwitch").style.backgroundColor = "rgb(195, 189, 189)";
             localStorage.setItem("selectedTable", "street");
+            break;
+        case "polyTableSwitch":
+            document.getElementById("polyTable").style.display = "table";
+            document.getElementById("polyTableSwitch").style.backgroundColor = "rgb(195, 189, 189)";
+            localStorage.setItem("selectedTable", "poly");
     }
 }

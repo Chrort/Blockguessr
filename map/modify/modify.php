@@ -11,6 +11,7 @@ $order = $_GET["or"] ?? "ASC";
 $sortLabels = $_GET["sl"] ?? "name";
 $sortBorders = $_GET["sb"] ?? "name";
 $sortStreets = $_GET["ss"] ?? "name";
+$sortPoly = $_GET["sp"] ?? "name";
 $order == "ASC" ? $order = "DESC" : $order = "ASC";
 
 //acces files
@@ -36,11 +37,17 @@ $nameStreet = '';
 $coordsStreet = '';
 $colorStreet = '#000000';
 
+$errorsPoly = ['namePoly' => '', 'coordsPoly' => '', 'typePoly' => ''];
+$namePoly = '';
+$coordsPoly = '';
+$typePoly = '';
+
 //get data
 
 $elements = getLabels($conn, $sortLabels, $order);
 $borders = getBorders($conn, $sortBorders, $order);
 $streets = getStreets($conn, $sortStreets, $order);
+$polygons = getPolygons($conn, $sortPoly, $order);
 
 //call functions
 
@@ -65,8 +72,15 @@ if (isset($_POST['submitStreet'])) {
     $coordsStreet = $streetResult['values']['coordsStreet'];
     $colorStreet = $streetResult['values']['colorStreet'];
 }
+if (isset($_POST['submitPoly'])) {
+    $polyResult = addPoly($conn);
+    $errorsPoly = $polyResult['errors'];
+    $namePoly = $polyResult['values']['namePoly'];
+    $coordsPoly = $polyResult['values']['coordsPoly'];
+    $typePoly = $polyResult['values']['typePoly'];
+}
 
-if (isset($_POST['deleteLabel']) || isset($_POST['deleteBorder']) || isset($_POST['deleteStreet'])) {
+if (isset($_POST['deleteLabel']) || isset($_POST['deleteBorder']) || isset($_POST['deleteStreet']) || isset($_POST['deletePoly'])) {
     deleteMarkup($conn);
 }
 
@@ -186,6 +200,47 @@ function addStreet($conn)
     return ['errors' => $errors, 'values' => $streets];
 }
 
+//add Label
+function addPoly($conn)
+{
+    $errors = array('namePoly' => '', 'coordsPoly' => '', 'typePoly' => '');
+    $polygons = array('namePoly' => '', 'coordsPoly' => '', 'typePoly' => '');
+
+    if (empty($_POST['namePoly'])) {
+        $errors['namePoly'] = 'Enter a name';
+    } else {
+        $polygons['namePoly'] = $_POST['namePoly'];
+    }
+    if (empty($_POST['coordsPoly'])) {
+        $errors['coordsPoly'] = 'Enter coordinates';
+    } else {
+        if (!preg_match('/^-?\d+,-?\d+(?:\s-?\d+,-?\d+)*$/', $_POST['coordsPoly'])) {
+            $errors['coordsPoly'] = 'Wrong format';
+        }
+        $polygons['coordsPoly'] = $_POST['coordsPoly'];
+    }
+    if (empty($_POST['typePoly'])) {
+        $errors['typePoly'] = 'Choose a type';
+    } else {
+        if ($_POST['typePoly'] != 'np') {
+            $errors['typePoly'] = 'Choose a valid type';
+        }
+        $polygons['typePoly'] = $_POST['typePoly'];
+    }
+
+    if (!array_filter($errors)) {
+        $polygons['name'] = mysqli_real_escape_string($conn, $_POST['nameLabel']);
+        $polygons['coordsPoly'] = mysqli_real_escape_string($conn, $_POST['coordsPoly']);
+        $polygons['type'] = mysqli_real_escape_string($conn, $_POST['typePoly']);
+
+        $sql = "INSERT INTO mappolygons(name, coords, type) VALUES ('{$polygons['namePoly']}', '{$polygons['coordsPoly']}', '{$polygons['type']}')";
+
+        modifyData($conn, $sql);
+    }
+
+    return ['errors' => $errors, 'values' => $polygons];
+}
+
 //delete
 
 function deleteMarkup($conn)
@@ -198,6 +253,8 @@ function deleteMarkup($conn)
         $sql = "DELETE FROM mapborders WHERE id = $id";
     } elseif (isset($_POST['deleteStreet'])) {
         $sql = "DELETE FROM mapstreets WHERE id = $id";
+    } elseif (isset($_POST['deletePoly'])) {
+        $sql = "DELETE FROM mappolygons WHERE id = $id";
     }
     modifyData($conn, $sql);
 }
@@ -259,6 +316,7 @@ function countLabels($elements)
                     <div id="selectLabel" class="selectForm" onclick="changeForm(id)">Add Label</div>
                     <div id="selectBorder" class="selectForm" onclick="changeForm(id)">Add Border</div>
                     <div id="selectStreet" class="selectForm" onclick="changeForm(id)">Add Street</div>
+                    <div id="selectPoly" class="selectForm" onclick="changeForm(id)">Add Polygon</div>
                 </div>
                 <form action="<?php $_SERVER['PHP_SELF'] ?>" method="post" id="labelForm" class="addForms">
                     <fieldset>
@@ -279,9 +337,9 @@ function countLabels($elements)
                         </div>
                         <div class="formI">
                             <label for="type">Choose type:</label>
-                            <input list="types" name="type" id="type" value="<?php echo htmlspecialchars($type) ?>" class="addI">
+                            <input list="typesLabel" name="type" id="type" value="<?php echo htmlspecialchars($type) ?>" class="addI">
                             <div class="error"><?php echo $errorsLabel['type'] ?></div>
-                            <datalist id="types">
+                            <datalist id="typesLabel">
                                 <option value="town"></option>
                                 <option value="waters"></option>
                                 <option value="landscape"></option>
@@ -332,6 +390,31 @@ function countLabels($elements)
                         </div>
                     </fieldset>
                 </form>
+                <form action="<?php $_SERVER['PHP_SELF'] ?>" method="post" id="polyForm" class="addForms">
+                    <fieldset>
+                        <div class="formI">
+                            <label for="name">Choose name:</label>
+                            <input type="text" name="namePoly" id="name" value="<?php echo htmlspecialchars($namePoly) ?>" class="addI">
+                            <div class="error"><?php echo $errorsPoly['namePoly'] ?></div>
+                        </div>
+                        <div class="formI">
+                            <label for="coordsPoly">Enter coordinates:</label>
+                            <input type="text" name="coordsPoly" id="coordsPoly" placeholder="eg.: x₁,y₁ x₂,y₂ ... xₙ,yₙ" value="<?php echo htmlspecialchars($coordsPoly) ?>" class="addI">
+                            <div class="error"><?php echo $errorsPoly['coordsPoly'] ?></div>
+                        </div>
+                        <div class="formI">
+                            <label for="typePoly">Choose type:</label>
+                            <input list="typesPoly" name="typePoly" id="typePoly" value="<?php echo htmlspecialchars($typePoly) ?>" class="addI">
+                            <div class="error"><?php echo $errorsPoly['typePoly'] ?></div>
+                            <datalist id="typesPoly">
+                                <option value="np"></option>
+                            </datalist>
+                        </div>
+                        <div class="formI">
+                            <input type="submit" value="Add Polygon" name="submitPoly" id="addSubmit">
+                        </div>
+                    </fieldset>
+                </form>
             </div>
             <div id="stats">
                 <p id="header">Statistics:</p>
@@ -370,6 +453,7 @@ function countLabels($elements)
                 <div id="labelTableSwitch" class="selectTable" onclick="changeTable(id)">Labels</div>
                 <div id="borderTableSwitch" class="selectTable" onclick="changeTable(id)">Borders</div>
                 <div id="streetTableSwitch" class="selectTable" onclick="changeTable(id)">Streets</div>
+                <div id="polyTableSwitch" class="selectTable" onclick="changeTable(id)">Polygons</div>
             </div>
             <table class="table" id="labelTable">
                 <thead>
@@ -439,6 +523,30 @@ function countLabels($elements)
                             <form action="<?php $_SERVER['PHP_SELF'] ?>" method="post" id="deleteForm">
                                 <input type="hidden" name="deleteId" value="<?php echo htmlspecialchars($streets[$i]['id']) ?>">
                                 <input type="submit" name="deleteStreet" value="Delete" class="deleteBtn">
+                            </form>
+                        </td>
+                        <?php echo "</tr>" ?>
+                    <?php endfor ?>
+                </tbody>
+            </table>
+            <table class="table" id="polyTable">
+                <thead>
+                    <tr>
+                        <th><a href="./modify.php?sp=name&or=<?= $order ?>">Name</a></th>
+                        <th><a href="./modify.php?sp=type&or=<?= $order ?>">Type</a></th>
+                        <th><a href="./modify.php?sp=id&or=<?= $order ?>">ID</a></th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php for ($i = 0; $i < count($polygons); $i++): echo "<tr>" ?>
+                        <td><?php echo htmlspecialchars($polygons[$i]['name']) ?></td>
+                        <td><?php echo htmlspecialchars($polygons[$i]['type']) ?></td>
+                        <td><?php echo htmlspecialchars($polygons[$i]['id']) ?></td>
+                        <td>
+                            <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post" id="deleteForm">
+                                <input type="hidden" name="deleteId" value="<?php echo htmlspecialchars($polygons[$i]['id']) ?>">
+                                <input type="submit" name="deletePoly" value="Delete" class="deleteBtn">
                             </form>
                         </td>
                         <?php echo "</tr>" ?>

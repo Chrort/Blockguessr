@@ -22,6 +22,7 @@ if (isset($_POST['pwd'])) {
 $borders = getBorders($conn);
 $panoramas = getPanoData($conn);
 $streets = getStreets($conn);
+$polygons = getPolygons($conn);
 
 ?>
 
@@ -33,7 +34,6 @@ $streets = getStreets($conn);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="../img/fullServerMap.png" type="image/x-icon">
     <link rel="stylesheet" href="map.css">
-    <meta name="labelData" content="<?php echo htmlspecialchars($labels) ?>">
     <title>Blockguessr - Map</title>
 </head>
 
@@ -69,6 +69,11 @@ $streets = getStreets($conn);
                 ?>
             </div>
             <svg viewBox="0 0 5120 5120" xmlns="http://www.w3.org/2000/svg" stroke="blue" class="borderSvg">
+                <defs>
+                    <pattern id="stripesNp" width="0.0001" height="0.005" patternUnits="objectBoundingBox" patternTransform="rotate(45)">
+                        <rect width="10" height="0.01" fill="#CBBA9F" stroke="#CBBA9F" stroke-opacity="0.7"></rect>
+                    </pattern>
+                </defs>
                 <?php
                 for ($i = 0; $i < sizeof($borders); $i++) {
                     $pairs = explode((" "), $borders[$i]['coords']);
@@ -104,6 +109,35 @@ $streets = getStreets($conn);
 
                     $transformedCoords = implode(" ", $transformedPairs);
                     echo "<polyline points='{$transformedCoords}' class='streetPolyline' fill='none' stroke='{$stroke}' />";
+                }
+                ?>
+                <?php
+                for ($i = 0; $i < sizeof($polygons); $i++) {
+                    $type = $polygons[$i]['type'];
+                    $name = $polygons[$i]['name'];
+
+                    if ($type == "np") {
+                        $stroke = "#CBBA9F";
+                        $strokeOpacity = "0.7";
+                        $fill = "url(#stripesNp)";
+                        $fillOpacity = "0.7";
+                    }
+
+                    $pairs = explode((" "), $polygons[$i]['coords']);
+                    $transformedPairs = [];
+
+                    foreach ($pairs as $pair) {
+
+                        list($x, $y) = explode(",", $pair);
+
+                        $x = (int)$x + 6 * 512;
+                        $y = (int)$y + 6 * 512;
+
+                        $transformedPairs[] = "$x,$y";
+                    }
+
+                    $transformedCoords = implode(" ", $transformedPairs);
+                    echo "<polygon points='{$transformedCoords}' class='{$type}_polygons' fill='{$fill}' fill-opacity='{$fillOpacity}' stroke='{$stroke}' stroke-opacity='{$strokeOpacity}'/>";
                 }
                 ?>
             </svg>

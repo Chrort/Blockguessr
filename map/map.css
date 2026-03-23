@@ -363,3 +363,8 @@ pwd:hover{
     cursor: pointer;
     background-color: rgba(180, 247, 247, 0.8);
 }
+
+.polygonText{
+    fill: black;
+    stroke: none;
+}

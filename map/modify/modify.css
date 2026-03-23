@@ -198,7 +198,7 @@ fieldset{
 }
 
 .selectForm{
-    width: calc(100% / 3);
+    width: calc(100% / 4);
     height: 100%;
     display: flex;
     justify-content: center;
@@ -210,7 +210,7 @@ fieldset{
 }
 
 .selectTable{
-    width: calc(100% / 3);
+    width: calc(100% / 4);
     height: 100%;
     display: flex;
     justify-content: center;
@@ -226,7 +226,7 @@ fieldset{
     border-radius: 25px 0 0 0 !important;
 }
 
-#selectStreet, #streetTableSwitch{
+#selectPoly, #polyTableSwitch{
     border-radius: 0 25px 0 0 !important;
 }
 

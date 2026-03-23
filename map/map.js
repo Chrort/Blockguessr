@@ -12,6 +12,7 @@ export let currentZoomLevel = +currentStyles.getPropertyValue("scale");
 
 let labelDataArray = [];
 let streetDataArray = [];
+let polygonDataArray = [];
 
 let currentType = 2;
 
@@ -45,7 +46,6 @@ const genMap = type => {
 }
 
 const changeMap = () => {
-  console.log(currentType);
   if(currentType == 5) currentType = 1;
   switch (currentType){
     case 2: 
@@ -68,29 +68,17 @@ const changeMap = () => {
 document.getElementById("mapType").addEventListener("click", changeMap);
 
 // ------------------------------------------------------------------------------------------
-
-window.onload = () => {
-  fetchData();
+window.onload = async () => {
+  await fetchData();
+  drawLabels(true);
   genMap();
   setupListener();
   setupMeasure();
   adaptPanoLinks();
   adaptStreets();
+  adaptPolygonsText();
   mapDiv.addEventListener("mousedown", mouseDown);
   mapDiv.addEventListener("wheel", mouseScroll, {passive: false});
-}
-
-// Drag and Drop ---------------------------------------------------------------------------
-
-const mouseMove = e => {
-  newX = startX - e.clientX;
-  newY = startY - e.clientY;
-
-  startX = e.clientX;
-  startY = e.clientY;
-
-  mapDiv.style.top = `${mapDiv.offsetTop - newY}px`;
-  mapDiv.style.left = `${mapDiv.offsetLeft - newX}px`;
 }
 
 // Zoom ---------------------------------------------------------------------------
@@ -114,6 +102,7 @@ const mouseScroll = e => {
   adaptBorders();
   adaptStreets();
   adaptPanoLinks();
+  adaptPolygonsText();
 
   //mouse pos after scale
   let mouseX2 = getMousePos(e, currentZoomLevel).x;
@@ -136,18 +125,39 @@ export const getMousePos = (e, currentZoomLevel) => {
   return {x, y};
 }
 
-const fetchData = () => {
-  fetch('../api/label_data.php')
+const fetchData = async () => {
+  await fetch('../api/label_data.php')
     .then(response => response.json())
     .then(data => {
       for(let i = 0; i < data.length; i++){
         labelDataArray.push(data[i]);
       }
-      drawLabels(true);
     })
-    .catch(error => console.error('Error while loading data: ', error))
+    .catch(error => console.error('Error while loading data: ', error));
 
-  fetch('../api/street_data.php')
+  await fetch('../api/polygon_data.php')
+    .then(response => response.json())
+    .then(data => {
+      for(let i = 0; i < data.length; i++){
+
+        let polygonCoordsArray = data[i][2].split(" ");
+
+        for(let k = 0; k < polygonCoordsArray.length; k++){
+          polygonCoordsArray[k] = polygonCoordsArray[k].split(",");
+        }
+        let maxCoords = [+polygonCoordsArray[0][0], +polygonCoordsArray[0][1], +polygonCoordsArray[0][0], +polygonCoordsArray[0][1]];
+        for(let j = 0; j < polygonCoordsArray.length; j++){
+          if(+polygonCoordsArray[j][0] < maxCoords[0]) maxCoords[0] = +polygonCoordsArray[j][0];
+          if(+polygonCoordsArray[j][1] < maxCoords[1]) maxCoords[1] = +polygonCoordsArray[j][1];
+          if(+polygonCoordsArray[j][0] > maxCoords[2]) maxCoords[2] = +polygonCoordsArray[j][0];
+          if(+polygonCoordsArray[j][1] > maxCoords[3]) maxCoords[3] = +polygonCoordsArray[j][1];
+        }
+        labelDataArray.push([data[i][0], data[i][1], `${(maxCoords[0] + 0.5 * (maxCoords[2] - maxCoords[0]))}`, `${(maxCoords[1] + 0.5 * (maxCoords[3] - maxCoords[1]))}`, 'polygon']);
+      }
+    })
+    .catch(error => console.error('Error while loading data: ', error));
+
+  await fetch('../api/street_data.php')
     .then(respones => respones.json())
     .then(data => {
       for(let j = 0; j < data.length; j++){
@@ -156,7 +166,7 @@ const fetchData = () => {
       drawStreetLabels(true);
       coordsArray();
     })
-    .catch(error => console.error('Error while loading data: ', error))
+    .catch(error => console.error('Error while loading data: ', error));
 }
 
 export const drawLabels = create => {
@@ -166,12 +176,13 @@ export const drawLabels = create => {
       if(create){
         let labelDiv = document.createElement("div");
         labelDiv.className = "labelDiv";
-        labelDiv.id = `mapLabel_${+labelDataArray[i][0]}`;
+        labelDiv.id = `mapLabel_${+labelDataArray[i][0]}_${labelDataArray[i][4]}`;
         mapDiv.appendChild(labelDiv);
       }
+      console.log("called")
 
       //positions divs and sets font-size
-      let labelDiv = document.getElementById(`mapLabel_${+labelDataArray[i][0]}`);
+      let labelDiv = document.getElementById(`mapLabel_${+labelDataArray[i][0]}_${labelDataArray[i][4]}`);
       labelDiv.style.left = `${+labelDataArray[i][2] + 512 * 6}px`;
       labelDiv.style.top = `${+labelDataArray[i][3] + 512 * 6}px`;
       labelDiv.style.fontSize = `${20 / currentZoomLevel**.7}px`;
@@ -227,6 +238,17 @@ export const drawLabels = create => {
             labelDiv.innerHTML = ``;
           }
           break;
+        case "polygon":
+          if(/*document.getElementById("polygon").checked && */currentZoomLevel > .2){
+            labelDiv.style.color = "#CBBA9F";
+            labelDiv.innerHTML = `${labelDataArray[i][1]}`;
+            labelDiv.style.translate = "-50% 0"
+            labelDiv.innerHTML = `${labelDataArray[i][1].toUpperCase()}`;
+          }
+          else{
+            labelDiv.innerHTML = ``;
+          }
+          break;
         default:
       }
       //adjust postion
@@ -239,12 +261,12 @@ export const drawLabels = create => {
 
 const checkCollision = () => {
   for(let i = 0; i < labelDataArray.length; i++){
-    let div = document.getElementById(`mapLabel_${+labelDataArray[i][0]}`);
+    let div = document.getElementById(`mapLabel_${+labelDataArray[i][0]}_${labelDataArray[i][4]}`);
     let size = div.getBoundingClientRect();
 
     for(let j = i + 1; j < labelDataArray.length; j++){
       if(j == i) continue;
-      let compareDiv = document.getElementById(`mapLabel_${+labelDataArray[j][0]}`);
+      let compareDiv = document.getElementById(`mapLabel_${+labelDataArray[j][0]}_${labelDataArray[j][4]}`);
       let compareSize = compareDiv.getBoundingClientRect();
       
       if(size.top < compareSize.bottom && size.bottom > compareSize.top && size.left < compareSize.right && size.right > compareSize.left){
@@ -392,6 +414,14 @@ const adaptStreets = () => {
   const streetLines = document.getElementsByClassName("streetPolyline");
   [].forEach.call(streetLines, (e) => {
     e.style.strokeWidth = 4 / currentZoomLevel**.6;
+  })
+}
+
+const adaptPolygonsText = () => {
+  const polygonsText = document.getElementsByClassName("polygonText");
+  [].forEach.call(polygonsText, (e) => {
+    e.style.fontSize = `${15 / currentZoomLevel ** .6}px`;
+    e.style.transform = `translateX(-${e.getBoundingClientRect().width * 0.5 / currentZoomLevel}px)`;
   })
 }
 
