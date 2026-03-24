@@ -12,9 +12,6 @@ export let currentZoomLevel = +currentStyles.getPropertyValue("scale");
 
 let labelDataArray = [];
 let streetDataArray = [];
-let polygonDataArray = [];
-
-let currentType = 2;
 
 // map div ---------------------------------------------------------------------------
 
@@ -45,28 +42,6 @@ const genMap = type => {
   }
 }
 
-const changeMap = () => {
-  if(currentType == 5) currentType = 1;
-  switch (currentType){
-    case 2: 
-      genMap("terrainMaps");
-      break;
-    case 3:
-      genMap("nightMaps");
-      break;
-    case 4: 
-      genMap("biomeMaps");
-      break;
-    default: 
-      genMap("maps");
-  }
-  currentType++;
-
-  document.querySelector("#mapType>svg").style.transform = `rotate(${180 * currentType}deg)`;
-}
-
-document.getElementById("mapType").addEventListener("click", changeMap);
-
 // ------------------------------------------------------------------------------------------
 window.onload = async () => {
   await fetchData();
@@ -79,6 +54,11 @@ window.onload = async () => {
   adaptPolygonsText();
   mapDiv.addEventListener("mousedown", mouseDown);
   mapDiv.addEventListener("wheel", mouseScroll, {passive: false});
+
+  document.getElementById("maps").addEventListener("click", () => {genMap("maps");});
+  document.getElementById("nightMaps").addEventListener("click", () => {genMap("nightMaps")});
+  document.getElementById("terrainMaps").addEventListener("click", () => {genMap("terrainMaps")});
+  document.getElementById("biomeMaps").addEventListener("click", () => {genMap("biomeMaps")});
 }
 
 // Zoom ---------------------------------------------------------------------------
@@ -152,7 +132,7 @@ const fetchData = async () => {
           if(+polygonCoordsArray[j][0] > maxCoords[2]) maxCoords[2] = +polygonCoordsArray[j][0];
           if(+polygonCoordsArray[j][1] > maxCoords[3]) maxCoords[3] = +polygonCoordsArray[j][1];
         }
-        labelDataArray.push([data[i][0], data[i][1], `${(maxCoords[0] + 0.5 * (maxCoords[2] - maxCoords[0]))}`, `${(maxCoords[1] + 0.5 * (maxCoords[3] - maxCoords[1]))}`, 'polygon']);
+        labelDataArray.push([data[i][0], data[i][1], `${(maxCoords[0] + 0.5 * (maxCoords[2] - maxCoords[0]))}`, `${(maxCoords[1] + 0.5 * (maxCoords[3] - maxCoords[1]))}`, data[i][3]]);
       }
     })
     .catch(error => console.error('Error while loading data: ', error));
@@ -179,7 +159,6 @@ export const drawLabels = create => {
         labelDiv.id = `mapLabel_${+labelDataArray[i][0]}_${labelDataArray[i][4]}`;
         mapDiv.appendChild(labelDiv);
       }
-      console.log("called")
 
       //positions divs and sets font-size
       let labelDiv = document.getElementById(`mapLabel_${+labelDataArray[i][0]}_${labelDataArray[i][4]}`);
@@ -238,8 +217,8 @@ export const drawLabels = create => {
             labelDiv.innerHTML = ``;
           }
           break;
-        case "polygon":
-          if(/*document.getElementById("polygon").checked && */currentZoomLevel > .2){
+        case "np":
+          if(document.getElementById("nationalParks").checked && currentZoomLevel > .2){
             labelDiv.style.color = "#CBBA9F";
             labelDiv.innerHTML = `${labelDataArray[i][1]}`;
             labelDiv.style.translate = "-50% 0"
@@ -403,6 +382,20 @@ document.getElementById("streetLine").addEventListener("change", () => {
       })
     }else{
       [].forEach.call(streetLines, (e) => {
+        e.style.visibility = "visible";
+      })
+    }
+});
+
+//hide np
+document.getElementById("nationalParks").addEventListener("change", () => {
+  const nationalParks = document.getElementsByClassName("np_polygons");
+    if(!document.getElementById("nationalParks").checked){
+      [].forEach.call(nationalParks, (e) => {
+        e.style.visibility = "hidden";
+      })
+    }else{
+      [].forEach.call(nationalParks, (e) => {
         e.style.visibility = "visible";
       })
     }

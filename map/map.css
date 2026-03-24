@@ -18,7 +18,7 @@
 header{
     position: relative;
     height: 6vh;
-    box-shadow: 0 0 10px 10px black;
+    box-shadow: 0 0 5px 5px black;
     font-size: 5vh;
     display: flex;
     justify-content: center;
@@ -78,118 +78,121 @@ main{
     border: 1px solid black;
 }
 
-#settings{
-    cursor: pointer;
-    position: fixed;
+#menu{
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 3;
     right: 20px;
-    bottom: 20px;
-    scale: 1.8;
-    transition: transform 1s;
+    width: 5vh;
+    height: 5vh;
+    border-radius: 50%;
+    box-shadow: 0 0 5px black;
+    cursor: pointer;
+}
+
+#menu:hover{
+    border: 1px solid black;
 }
 
 #settingsContainer{
-    position: fixed;
-    display: flex;
+    border-top: 1px solid black;
+    z-index: 10;
+    position: absolute;
+    top: 0;
     right: 0;
-    bottom: 0;
-    z-index: 4;
-    padding: 15px;
-    width: 67px;
-    height: 67px; 
-    justify-content: center;
+    display: flex;
     flex-direction: column;
-    gap: 5px;
-    background-color: rgba(240, 248, 255, 1);
-    box-shadow: 0 0 5px 5px;
-    border-radius: 10px 0 0 0;
-    transition: width .7s, height .7s;
+    height: calc(100% - 6vh);
+    width: 15%;
+    transform: translateX(100%);
+    transition: transform 0.75s ease;
+    background-color: rgba(240, 248, 255, .6);
+    padding: 10px;
+    gap: 10px;
+    font-size: 1.3em;
 }
 
-#settingsContainer>div>form>input[type=submit]{
-    cursor: default;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    text-decoration: none;
-    font-size: 24px;
-    margin: 0;
-    color: black;
-    padding: 5px;
-    border-radius: 10px;
-    background-color: rgb(188, 220, 229);
-    transition: background-color .4s;
-}
-
-#settingsContainer>div>form>input[type=submit]:hover{
-    background-color: rgb(198, 220, 239);
-}
-
-#settingsContainer>div{
-    display: flex;
-    flex-direction: row;
-    gap: 20px;  
-    padding-left: 10px;
-}
-
-#modifyLinkDiv{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-
-#pwdForm{
-    width: 100%;
-    display: flex;
-    flex-direction: column-reverse;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    padding: 5px;
-}
-
-#pwd{
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    text-decoration: none;
-    font-size: 24px;
-    margin: 0;
-    color: black;
-    border: 1px solid;
-    padding: 5px;
-    border-radius: 10px;
-    transition: background-color .4s;
-    display: none;
-}
-
-pwd:hover{
-    background-color: rgb(198, 220, 239);
-}
-
-.labelCheckbox{
-    font-size: 1.5em;
-    margin: 5px 5px 5px 0;
-    display: none;
+#settingsContainer > div{
+    cursor: pointer;
 }
 
 .inputCheckbox{
+    height: 1.1em;
+    width: 1.1em;
+    border-radius: 20%;
+    color: black;
     cursor: pointer;
-    scale: 1.5;
-    margin: 5px 0 5px 5px;
-    display: none;
 }
 
-#measureArea, #measureDistance{
+#pwdForm{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    padding: 10px;
+    gap: 5px;
+}
+
+#pwdForm > input{
+    padding: 0 10px 0 10px;
+    width: 100%;
+    border-radius: 10px;
+    height: 2em;
+    border: none;
+}
+
+#modifySubmit{
     cursor: pointer;
-    display: none;
-    gap: 13px;
+    transition: background-color .75s;
+}
+
+#modifySubmit:hover{
+    background-color: rgb(0, 172, 0);
+}
+
+#modifyLink{    
+    width: 100%;
+    border-radius: 10px;
+    height: 1.5em;
+    background-color: white;
+    background-color: transparent;
+    border: 1px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color .75s;
+}
+
+#modifyLink:hover{
+    background-color: rgb(0, 172, 0);
+}
+
+#modifyLink > a{
+    color: black;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
+
+#mapTypes{
+    display: grid;
+    width: 70%;
+    aspect-ratio: 1 / 1;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
+    align-items: center;
+    transform: translateX(20%);
+}
+
+
+#mapTypes > img{
+    border-radius: 10px;
+    height: 3em;
+    width: 3em;
 }
 
 .pointLabels{
@@ -280,28 +283,6 @@ pwd:hover{
 #coords{
     position: fixed !important;
     bottom: 15px;
-}
-
-#mapType{
-    cursor: pointer;
-    position: fixed;
-    background-color: rgba(240, 248, 255, 1);
-    border-radius: 0 10px 0 0;
-    bottom: 0;
-    left: 0;
-    z-index: 5;
-    box-shadow: 0 0 5px 5px;
-    width: 67px;
-    height: 67px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#mapType>svg{
-    scale: 1.8;
-    display: block;
-    transition: transform 1s;
 }
 
 #escape{
