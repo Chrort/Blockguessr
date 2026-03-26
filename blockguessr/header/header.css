@@ -9,7 +9,7 @@ header{
     top: 0;
     position: sticky;
     height: 6vh;
-    box-shadow: 0 0 10px 10px black;
+    box-shadow: 0 0 10px 5px black;
     font-size: 5vh;
     display: flex;
     justify-content: center;

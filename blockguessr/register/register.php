@@ -19,7 +19,6 @@ unset($_SESSION["username"], $_SESSION["email"], $_SESSION["pwd"], $_SESSION["pw
     <link rel="stylesheet" href="register.css">
     <link rel="stylesheet" href="../header/header.css">
     <title>BlockGuessr - Register</title>
-    <link rel="icon" type="image/x-icon" href="../../img/favicon.png">
 </head>
 
 <body>

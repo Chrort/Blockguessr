@@ -24,7 +24,7 @@ $creationDate = $_SESSION['date'];
     <link rel="stylesheet" href="profile.css">
     <link rel="stylesheet" href="../header/header.css">
     <title>Blockguessr - Profile</title>
-    <link rel="icon" type="image/x-icon" href="../../img/favicon.png">
+    <link rel="icon" type="image/x-icon" href="../../img/fullServerMap.png">
 </head>
 
 <body>

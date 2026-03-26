@@ -20,9 +20,9 @@ let streetDataArray = [];
 let locations = [];
 
 let pinIsDown = false;
-let movedMap = false;
 let locScreen = true;
 let currentRound = 0;
+let timePlayed = 0;
 let minScale;
 let maxScale = 30;
 
@@ -41,13 +41,13 @@ const fetchData = async () => {
         const response = await fetch('../../api/location_data.php');
         const data = await response.json();
 
-        let randomYaw = Math.random() < .5 ? -1 : 1;
-
         pannellum.viewer('panorama', {
             "type": "cubemap",
             "autoLoad": true,
-            "yaw": 90 * randomYaw,
+            "yaw": 180,
             "showControls": false,
+            "compass": true,
+            "northOffset": 0,
             "cubeMap": [
                 `./panoramas/${username}/${data[currentRound][1]}panorama_0.png`,
                 `./panoramas/${username}/${data[currentRound][1]}panorama_1.png`,
@@ -71,7 +71,7 @@ const fetchData = async () => {
           }
           drawLabels(true);
         })
-        .catch(error => console.error('Error while loading data: ', error))
+        .catch(error => console.error('Error while loading data: ', error));
     
       fetch('../../api/street_data.php')
         .then(respones => respones.json())
@@ -81,14 +81,14 @@ const fetchData = async () => {
           }
           drawStreetLabels(true);
         })
-        .catch(error => console.error('Error while loading data: ', error))
+        .catch(error => console.error('Error while loading data: ', error));
 
         fetch('../../api/get_map_expansion.php')
         .then(response => response.json())
         .then(data => {
           expansion = data;
         })
-        .catch(error => console.error('Error while loading data: ', error))
+        .catch(error => console.error('Error while loading data: ', error));
 }
 
 window.onload = () => {
@@ -102,6 +102,9 @@ window.onload = () => {
     guessBtn.addEventListener("click", () => {
       if(pinIsDown) guess();
     });
+    setInterval(() => {
+      timePlayed++;
+    }, 100);
 }
 
 const guess = () => {
@@ -172,10 +175,10 @@ const distance = () => {
 }
 
 const calculateScore = d => {
-  let radius = 5 * (1 + 0.0001 * expansion);
-  console.log(radius)
+  let radius = 5 * (1 + 0.0002 * expansion);
   if(d < radius) return 5000;
-  let p = 5000 * Math.E**(-10 * d / (expansion * 5));
+  let p = 5000 * Math.E**(-20 * (d - 5) / (expansion * 5));
+  console.log(radius, d, p, expansion);
   return Math.round(p);
 }
 
@@ -219,13 +222,13 @@ const nextRound = () => {
   idLine.setAttribute("y2", "0");
   adaptSize();
 
-  let randomYaw = Math.random() < .5 ? -1 : 1;
-
   pannellum.viewer('panorama', {
             "type": "cubemap",
             "autoLoad": true,
-            "yaw": 90 * randomYaw,
+            "yaw": 180,
             "showControls": false,
+            "compass": true,
+            "northOffset": 0,
             "cubeMap": [
                 `./panoramas/${username}/${locations[currentRound][1]}panorama_0.png`,
                 `./panoramas/${username}/${locations[currentRound][1]}panorama_1.png`,
@@ -245,6 +248,7 @@ const btnAction = () => {
   if(locScreen && pinIsDown){
       guess();
     }else if(currentRound >= 4 && locScreen == false){
+      localStorage.setItem("timePlayed", timePlayed / 10);
       localStorage.setItem("totalP", totalPoints);
       localStorage.setItem("roundData", JSON.stringify(roundData));
       window.location.href = "./summary.php";
@@ -506,7 +510,6 @@ const adaptSize = () => {
 }
 
 const setPin = e => {
-  if(movedMap) return;
   if(locScreen){
     let x = getMousePos(e, currentZoomLevel).x;
     let y = getMousePos(e, currentZoomLevel).y;

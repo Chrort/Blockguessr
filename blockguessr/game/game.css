@@ -65,6 +65,22 @@ main{
     z-index: 1;
 }
 
+.pnlm-compass{
+    padding: 5px !important;
+    position: absolute;
+    left: 30px !important;
+    top: 30px !important;
+    border-radius: 50% !important;
+    width: 47px !important;
+    height: 47px !important;
+    background-image: url('../../img/compass.png') !important;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-color: rgba(164, 213, 224, 1) !important;
+    border: 2px solid #c61d1dff !important;
+}
+
 #guessContainer{
     z-index: 3;
     position: absolute;

@@ -1,0 +1,108 @@
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+body{
+    width: 100vw;
+    min-height: 100vh;
+    overflow-y: scroll;
+    background: #fafafa;
+    background: linear-gradient(104deg,rgba(250, 250, 250, 1) 0%, rgba(164, 213, 224, 1) 100%);
+}
+
+main{
+    padding: 20px;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#stats, h1, #medals, #recentGames{
+    width: 50%;
+    padding: 20px;
+    box-shadow: 0 0 5px black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 1.6em;
+    border-radius: 20px;
+}
+
+#games{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td, th{
+    width: calc(100vw / 4);
+    text-align: right;
+    padding: 5px 15px;
+    font-size: .7em;
+}
+
+th{
+    font-size: 1em !important;
+}
+
+tr{
+    border-top: 1px solid;
+}
+
+tr:nth-child(even){
+    background-color: hsla(0, 0%, 100%, 0.3);
+}
+
+thead{
+    border-radius: 30px 30px 0 0;
+}
+
+h1{
+    font-size: 2em !important;
+}
+
+#medals{
+    flex-direction: row !important;
+    height: calc(2em + 20px);
+    padding: 0 !important;
+    gap: 0 !important;
+    overflow: hidden;
+}
+
+.medal{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.medal_0{
+    background-color: gray;
+    background: linear-gradient(127deg,rgb(178, 178, 178) 2%, rgb(165, 165, 165) 42%, rgb(210, 210, 210) 77%, rgb(183, 183, 183) 100%);
+}
+
+.medal_1{
+    background: linear-gradient(127deg,rgba(223, 129, 70, 1) 2%, rgba(223, 130, 71, 1) 42%, rgb(242, 233, 227) 77%, rgba(226, 133, 74, 1) 100%);
+}
+
+.medal_2{
+    background: linear-gradient(127deg,rgb(207, 207, 207) 2%, rgba(226, 226, 226, 1) 42%, rgba(247, 247, 247, 1) 77%, rgba(204, 204, 204, 1) 100%);
+}
+
+.medal_3{
+    background: linear-gradient(127deg,rgba(234, 192, 62, 1) 2%, rgba(235, 188, 44, 1) 42%, rgba(252, 249, 207, 1) 77%, rgba(249, 204, 68, 1) 100%);
+}
+
+.medal_4{
+    background: linear-gradient(127deg,rgba(85, 219, 246, 1) 2%, rgba(66, 201, 232, 1) 42%, rgb(205, 237, 237) 75%, rgba(46, 182, 217, 1) 100%);
+}
+

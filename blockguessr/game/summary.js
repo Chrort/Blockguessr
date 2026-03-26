@@ -4,18 +4,21 @@ const exit = document.getElementById("exitToStartpage");
 
 let roundData = JSON.parse(localStorage.getItem("roundData"));
 let totalPoints = +localStorage.getItem("totalP");
+let timePlayed = +localStorage.getItem("timePlayed");
 let averageDistance = 0;
+
+console.log(totalPoints, timePlayed);
 
 window.onload = () => {
     displaySummary();
 
-    fetch("./summary.php", {
+    fetch("./save_game_data.php", {
         method: "POST",
         headers: {
         "Content-Type": "application/x-www-form-urlencoded"
         },
-        body: `totalPoints=${encodeURIComponent(totalPoints)}`
-    })
+        body: `totalPoints=${encodeURIComponent(totalPoints)}&timePlayed=${encodeURIComponent(timePlayed)}`
+    });
 }
 
 const displaySummary = () => {

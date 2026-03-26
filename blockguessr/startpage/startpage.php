@@ -16,7 +16,7 @@ $globalMaps = [];
 $provinceMaps = [];
 $otherMaps = [];
 
-$highscoreData = getHighscoreData($conn, $_SESSION["id"])[0];
+$highscoreData = getHighscoreData($conn, $_SESSION["id"], true)[0];
 
 foreach ($worldData as $world) {
     if ($world[3] == "1") {

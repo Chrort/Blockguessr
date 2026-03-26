@@ -14,6 +14,7 @@ export const mouseDown = e => {
 }
 
 const mouseMove = e => {
+
   newX = startX - e.clientX;
   newY = startY - e.clientY;
 
