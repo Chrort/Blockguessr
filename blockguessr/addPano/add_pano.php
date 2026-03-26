@@ -57,9 +57,8 @@ if (isset($_POST['submit'])) {
     $_SESSION['count'] = count($_FILES['file']['name']);
     $_SESSION['provinceAbbr'] = strtoupper(trim($_POST['province']));
 
-    $map = getWorldDataByName($conn, getFullMapName(strtoupper(trim($_POST['province']))));
-
     for ($i = 0; $i < count($_FILES['file']['name']); $i++) {
+        $map = getWorldDataByName($conn, getFullMapName($_SESSION['provinceAbbr']));
         upload($conn, $provinceAbbrevations, $_FILES['file']['name'][$i], $_FILES['file']['tmp_name'][$i], $map);
     }
 
