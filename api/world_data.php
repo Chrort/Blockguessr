@@ -17,6 +17,18 @@ function getWorldData($conn, $id)
     return $maps;
 }
 
+function getWorldDataByName(mysqli $conn, string $name)
+{
+    $stmt = $conn->prepare("SELECT * FROM maps WHERE name = ?");
+    $stmt->bind_param("s", $name);
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $map = $result->fetch_all(MYSQLI_NUM)[0];
+
+    return $map;
+}
+
 function getMapNameById(mysqli $conn, int $id)
 {
     $stmt = $conn->prepare("SELECT name FROM maps WHERE id = ?");

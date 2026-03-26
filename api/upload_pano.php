@@ -1,10 +1,11 @@
 <?php
 
 require __DIR__ . '/../vendor/autoload.php';
+//require __DIR__ . '/./world_data.php';
 
 use Google\Cloud\Storage\StorageClient;
 
-function upload($conn, $provinceAbbrevations, $name, $zipFile)
+function upload($conn, $provinceAbbrevations, $name, $zipFile, $map)
 {
     $zip = new ZipArchive(); //create new archive
     if ($zip->open($zipFile) === true) {
@@ -28,6 +29,7 @@ function upload($conn, $provinceAbbrevations, $name, $zipFile)
         try {
             uploadToCloud($images, $id);
             insertInDatabase($id, $conn, $name);
+            addIdtoProvinceMaps($conn, $id, $map);
         } catch (Exception $e) {
             throwError("Process failed: " . $e->getMessage());
         }
@@ -67,7 +69,6 @@ function uploadToCloud($images, $id)
 
 function insertInDatabase($id, $conn, $name)
 {
-
     $name = explode("_", $name);
 
     $x = (int)trim($name[0], "x");
@@ -80,4 +81,42 @@ function insertInDatabase($id, $conn, $name)
     $stmt->bind_param("siis", $folderName, $x, $y, $province);
     $stmt->execute();
     $stmt->close();
+}
+
+function addIdtoProvinceMaps($conn, $folder_id, $map)
+{
+
+    $folderName = 'panorama-folder/' . $folder_id . '/';
+
+    $stmt = $conn->prepare("SELECT id FROM panodata WHERE folderName = ?");
+    $stmt->bind_param("s", $folderName);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $pano_id = $result->fetch_all(MYSQLI_NUM)[0][0];
+
+    $mapId = $map[0];
+    $locations = explode(",", $map[2]);
+
+    array_push($locations, $pano_id);
+
+    $newLocations = implode(",", $locations);
+
+    $stmt = $conn->prepare("UPDATE maps SET locations = ? WHERE id = ?");
+    $stmt->bind_param("si", $newLocations, $mapId);
+    $stmt->execute();
+
+    //update world
+
+    $worldMap = getWorldDataByName($conn, "World");
+
+    $mapId = $worldMap[0];
+    $locations = explode(",", $worldMap[2]);
+
+    array_push($locations, $pano_id);
+
+    $newLocations = implode(",", $locations);
+
+    $stmt = $conn->prepare("UPDATE maps SET locations = ? WHERE id = ?");
+    $stmt->bind_param("si", $newLocations, $mapId);
+    $stmt->execute();
 }

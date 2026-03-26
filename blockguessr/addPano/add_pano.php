@@ -6,15 +6,14 @@ set_time_limit(0);
 require __DIR__ . '/../../api/upload_pano.php';
 require __DIR__ . '/../../config/login_queries.php';
 require __DIR__ . '/../../config/db_connect.php';
+require __DIR__ . '/../../api/world_data.php';
 
-$username = $_SESSION['username'];
-$role = getUserData($username, $conn)[0][5];
-
-if (!$_SESSION['loggedIn'] || $role != "admin") {
+if (!$_SESSION['loggedIn'] || getUserData($_SESSION['username'], $conn)[0][5] != "admin") {
     header("Location: ../login/login.php");
     exit();
 }
 
+$username = $_SESSION['username'];
 $provinceAbbr = $_SESSION['provinceAbbr'] ?? "";
 
 $provinceAbbrevations = array(
@@ -58,11 +57,102 @@ if (isset($_POST['submit'])) {
     $_SESSION['count'] = count($_FILES['file']['name']);
     $_SESSION['provinceAbbr'] = strtoupper(trim($_POST['province']));
 
+    $map = getWorldDataByName($conn, getFullMapName(strtoupper(trim($_POST['province']))));
+
     for ($i = 0; $i < count($_FILES['file']['name']); $i++) {
-        upload($conn, $provinceAbbrevations, $_FILES['file']['name'][$i], $_FILES['file']['tmp_name'][$i]);
+        upload($conn, $provinceAbbrevations, $_FILES['file']['name'][$i], $_FILES['file']['tmp_name'][$i], $map);
     }
 
     $_SESSION['succes'] = true;
+}
+
+function getFullMapName(string $provinceAbbr): string
+{
+    switch ($provinceAbbr) {
+        case "AM":
+            return "Amazonien";
+            break;
+        case "AN":
+            return "Außengebiet Nord";
+            break;
+        case "EG":
+            return "Eglynas";
+            break;
+        case "EL":
+            return "Elarion";
+            break;
+        case "FM":
+            return "Formosa";
+            break;
+        case "GM":
+            return "Grönmark";
+            break;
+        case "GL":
+            return "Gultland";
+            break;
+        case "KT":
+            return "Khwati";
+            break;
+        case "MG":
+            return "Mägismaa";
+            break;
+        case "MT":
+            return "Maastik";
+            break;
+        case "MW":
+            return "Morwyn";
+            break;
+        case "NR":
+            return "Naryn";
+            break;
+        case "NP":
+            return "Nationalpark";
+            break;
+        case "NF":
+            return "Nordisches Flachland";
+            break;
+        case "PH":
+            return "Pahia";
+            break;
+        case "PV":
+            return "Pieva";
+            break;
+        case "PL":
+            return "Polynesien";
+            break;
+        case "RO":
+            return "Reota";
+            break;
+        case "SM":
+            return "Samudra";
+            break;
+        case "SL":
+            return "Südlande";
+            break;
+        case "SH":
+            return "Sehloa";
+            break;
+        case "SV":
+            return "Selvameer";
+            break;
+        case "SA":
+            return "Soala";
+            break;
+        case "TW":
+            return "Terra West";
+            break;
+        case "UP":
+            return "Upland";
+            break;
+        case "UT":
+            return "Uthlande";
+            break;
+        case "WL":
+            return "Weißes Land";
+            break;
+        default:
+            return "";
+    }
 }
 
 ?>
