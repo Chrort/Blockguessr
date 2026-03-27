@@ -1,3 +1,5 @@
+const toggleLeaderboard = document.querySelectorAll('.toggleLeaderboard');
+
 let yaw = Math.random() * 360;
 
 const loadingScreen = () => {
@@ -44,3 +46,9 @@ document.getElementById('dropdown').style.setProperty(
 );
 
 document.getElementById("goBack").setAttribute("href", "../../index.php");
+
+[].forEach.call(toggleLeaderboard, e => {
+    e.addEventListener("click", () => {
+        e.parentElement.querySelector('.leaderboard').classList.toggle("activeLeaderboard");
+    })
+})

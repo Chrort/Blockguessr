@@ -2,6 +2,8 @@
 
 session_start();
 
+require '../api/get_pwd.php';
+
 if (isset($_POST["submit"]) && isset($_SESSION['edit']) && $_SESSION['edit'] == true) {
     $file = $_FILES["file"];
     if (!empty($_POST['date'])) {
@@ -26,7 +28,7 @@ foreach ($files as $file) {
 
 
 if (isset($_POST["submitPwd"])) {
-    if (hash("xxh3", $_POST["pwd"]) !== hash("xxh3", "LeoO2Chrqrt")) {
+    if ($_POST["pwd"] != getPwd()) {
         $errors["pwd"] = "Wrong password";
     } else {
         $_SESSION["edit"] = true;
