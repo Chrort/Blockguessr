@@ -55,8 +55,26 @@ function insertGameData(mysqli $conn, int $totalPoints, float $timePlayed)
     $player_id = $_SESSION["id"] ?? 0;
     $map_id = $_SESSION["mapId"] ?? 0;
 
+    //add to games table
     $stmt = $conn->prepare("INSERT INTO games (player_id, map_id, score, time) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("iiid", $player_id, $map_id, $totalPoints, $timePlayed);
+    $stmt->execute();
+    $stmt->close();
+
+    //get current xp from user
+    $stmt = $conn->prepare("SELECT xp FROM users WHERE id = ?");
+    $stmt->bind_param("i", $player_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $xp = $result->fetch_all(MYSQLI_NUM)[0][0];
+    $stmt->close();
+
+    $newXp = $xp + round($totalPoints / 200);
+    if ($totalPoints == 25000) $newXp += 50;
+
+    //insert new xp
+    $stmt = $conn->prepare("UPDATE users SET xp = ? WHERE id = ?");
+    $stmt->bind_param("di", $newXp, $player_id);
     $stmt->execute();
     $stmt->close();
 }

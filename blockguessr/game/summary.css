@@ -20,7 +20,7 @@ main{
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    gap: 50px;
+    gap: 2em;
 }
 
 h1{
@@ -56,6 +56,50 @@ td{
     padding: 5px;
     border-top: 1px solid black;
     text-align: center;
+}
+
+#xp{
+    position: relative;
+    width: 80%;
+    font-size: 2.5em;
+    box-shadow: 0 0 5px black; 
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    height: 2.5rem;
+}
+
+#currentLevel, #nextLevel{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    z-index: 2;
+}
+
+#bar{
+    width: auto;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#bar > p{
+    z-index: 2;
+    font-size: 1.5rem !important;
+}
+
+#currentBar{
+    position: absolute;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(127deg,rgba(234, 192, 62, 1) 2%, rgba(235, 188, 44, 1) 42%, rgba(252, 249, 207, 1) 77%, rgba(249, 204, 68, 1) 100%);
+    z-index: 1;
 }
 
 #exitToStartpage{

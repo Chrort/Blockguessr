@@ -6,6 +6,13 @@ if (!$_SESSION['loggedIn']) {
     exit();
 }
 
+require '../../config/db_connect.php';
+require '../../api/users_data.php';
+
+$id = $_SESSION['id'];
+$xp = getUserXp($conn, $id);
+$levelData = getUserLevelInfo($xp);
+
 ?>
 
 <!DOCTYPE html>
@@ -13,6 +20,9 @@ if (!$_SESSION['loggedIn']) {
 
 <head>
     <meta charset="UTF-8">
+    <meta id="levelData0" content="<?= $levelData[0] ?>">
+    <meta id="levelData1" content="<?= $levelData[1] ?>">
+    <meta id="userXp" content="<?= $xp ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="summary.css">
     <link rel="icon" type="image/x-icon" href="../../img/fullServerMap.png">
@@ -42,6 +52,15 @@ if (!$_SESSION['loggedIn']) {
                 <td id='total'></td>
             </tr>
         </table>
+
+        <div id="xp">
+            <div id="currentLevel"><?= $levelData[0] ?></div>
+            <div id="bar">
+                <div id="currentBar" style="width: <?= ($xp - (100 * ($levelData[0]) ** 2)) / $levelData[1] * 100 ?>%"></div>
+                <p id="progress"></p>
+            </div>
+            <div id="nextLevel"><?= $levelData[0] + 1 ?></div>
+        </div>
 
         <div id="exitToStartpage">
             <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 -960 960 960" width="1em" fill="#1f1f1f">

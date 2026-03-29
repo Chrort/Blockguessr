@@ -9,6 +9,7 @@ if (!$_SESSION['loggedIn']) {
 require_once '../../config/db_connect.php';
 require_once '../../api/games_data.php';
 require_once '../../api/highscore_data.php';
+require_once '../../api/users_data.php';
 require_once '../../api/world_data.php';
 
 $userId = $_SESSION['id'];
@@ -17,6 +18,9 @@ $username = $_SESSION['username'];
 $highscores = getHighscoreData($conn, $userId, false)[0];
 
 $diffTypes = 0;
+
+$xp = getUserXp($conn, $userId);
+$levelData = getUserLevelInfo($xp);
 
 array_shift($highscores);
 sort($highscores, SORT_DESC);
@@ -79,6 +83,14 @@ function countMedals(array $highscores): array
     <?php require_once '../header/header.php' ?>
     <main>
         <h1>Statistic for <?= $username ?></h1>
+        <div id="xp">
+            <div id="currentLevel"><abbr title="Level <?= $levelData[0] ?> at <?= 100 * $levelData[0] ** 2 ?>xp"><?= $levelData[0] ?></abbr></div>
+            <div id="bar">
+                <div id="currentBar" style="width: <?= ($xp - (100 * ($levelData[0]) ** 2)) / $levelData[1] * 100 ?>%"></div>
+                <p id="progress"><?= round(($xp - (100 * ($levelData[0]) ** 2)) / $levelData[1] * 100, 2) ?>%</p>
+            </div>
+            <div id="nextLevel"><abbr title="Level <?= $levelData[0] + 1 ?> at <?= 100 * ($levelData[0] + 1) ** 2 ?>xp"><?= $levelData[0] + 1 ?></abbr></div>
+        </div>
         <div id="medals">
             <?php for ($i = count(countMedals($highscores)) - 1; $i > -1; $i--): ?>
                 <?php if (countMedals($highscores)[$i] > 0): ?>
@@ -91,6 +103,7 @@ function countMedals(array $highscores): array
             <div>Total Games: <?= count($games) ?></div>
             <div>Total Points: <?= totalPoints($games) ?></div>
             <div>Average Points: <?= count($games) > 0 ? round(totalPoints($games) / count($games), 2) : 0 ?></div>
+            <div>Total XP: <?= $xp ?></div>
         </section>
         <section id="recentGames">
             <h2>Recent Games</h2>
@@ -104,7 +117,7 @@ function countMedals(array $highscores): array
                     </tr>
                 </thead>
                 <tbody>
-                    <?php for ($i = 0; $i < count($games); $i++): ?>
+                    <?php for ($i = count($games) - 1; $i >= 0; $i--): ?>
                         <tr>
                             <td><?= getMapNameById($conn, $games[$i]['map_id'])[0] ?></td>
                             <td><?= $games[$i]['score'] ?></td>

@@ -24,6 +24,11 @@ main{
     align-items: center;
 }
 
+abbr{
+    text-decoration: none;
+    cursor: pointer;
+}
+
 #stats, h1, #medals, #recentGames{
     width: 50%;
     padding: 20px;
@@ -104,5 +109,49 @@ h1{
 
 .medal_4{
     background: linear-gradient(127deg,rgba(85, 219, 246, 1) 2%, rgba(66, 201, 232, 1) 42%, rgb(205, 237, 237) 75%, rgba(46, 182, 217, 1) 100%);
+}
+
+#xp{
+    position: relative;
+    width: 50%;
+    font-size: 2.5em;
+    box-shadow: 0 0 5px black; 
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    height: 2.5rem;
+}
+
+#currentLevel, #nextLevel{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    z-index: 2;
+}
+
+#bar{
+    width: auto;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#bar > p{
+    z-index: 2;
+    font-size: 1.5rem !important;
+}
+
+#currentBar{
+    position: absolute;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(127deg,rgba(234, 192, 62, 1) 2%, rgba(235, 188, 44, 1) 42%, rgba(252, 249, 207, 1) 77%, rgba(249, 204, 68, 1) 100%);
+    z-index: 1;
 }
 

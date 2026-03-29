@@ -40,8 +40,8 @@ if (isset($_POST["submit"]) && $_POST["submit"] == "Login") {
     $_SESSION["username"] = $userData[1];
     $_SESSION["email"] = $userData[2];
     $_SESSION["pwd"] = $pwd;
-    $_SESSION["date"] = $userData[4];
-    $_SESSION["role"] = $userData[5];
+    $_SESSION["date"] = $userData[5];
+    $_SESSION["role"] = $userData[6];
 
     $_SESSION['loggedIn'] = true;
     header("Location: ../blockguessr/startpage/startpage.php");

@@ -1,18 +1,19 @@
 const total = document.getElementById("total");
 const average = document.getElementById("average");
 const exit = document.getElementById("exitToStartpage");
+const currentLevel = +document.getElementById("levelData0").content;
+const xpToNextLevel = +document.getElementById("levelData1").content;
+const userXp = +document.getElementById("userXp").content;
 
 let roundData = JSON.parse(localStorage.getItem("roundData"));
 let totalPoints = +localStorage.getItem("totalP");
 let timePlayed = +localStorage.getItem("timePlayed");
 let averageDistance = 0;
 
-console.log(totalPoints, timePlayed);
-
-window.onload = () => {
+window.onload = async () => {
     displaySummary();
 
-    fetch("./save_game_data.php", {
+    await fetch("./save_game_data.php", {
         method: "POST",
         headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -42,6 +43,12 @@ const displaySummary = () => {
 
     average.innerHTML = `${Math.round((averageDistance / 5) * 100) / 100}`;
     total.innerHTML = `${totalPoints}`;
+    document.getElementById("progress").innerHTML = `+${Math.round(newXp(totalPoints))}xp | ${Math.round((userXp - (100 * currentLevel ** 2)) / xpToNextLevel * 100)}%`;
+}
+
+const newXp = totalPoints => {
+    if(totalPoints == 25000) return totalPoints / 200 + 50;
+    return totalPoints / 200;
 }
 
 document.addEventListener("keydown", (e) => {
