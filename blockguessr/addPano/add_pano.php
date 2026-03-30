@@ -8,7 +8,7 @@ require __DIR__ . '/../../config/login_queries.php';
 require __DIR__ . '/../../config/db_connect.php';
 require __DIR__ . '/../../api/world_data.php';
 
-if (!$_SESSION['loggedIn'] || getUserData($_SESSION['username'], $conn)[0][5] != "admin") {
+if (!$_SESSION['loggedIn'] || getUserData($_SESSION['username'], $conn)[0][6] != "admin") {
     header("Location: ../login/login.php");
     exit();
 }

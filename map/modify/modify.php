@@ -510,6 +510,7 @@ function countLabels($elements)
                     <tr>
                         <th><a href="./modify.php?ss=name&or=<?= $order ?>">Name</a></th>
                         <th><a href="./modify.php?ss=color&or=<?= $order ?>">Color</a></th>
+                        <th><a href="./modify.php?ss=length&or=<?= $order ?>">Length</a></th>
                         <th><a href="./modify.php?ss=id&or=<?= $order ?>">ID</a></th>
                         <th>Delete</th>
                     </tr>
@@ -518,6 +519,7 @@ function countLabels($elements)
                     <?php for ($i = 0; $i < count($streets); $i++): echo "<tr>" ?>
                         <td><?php echo htmlspecialchars($streets[$i]['name']) ?></td>
                         <td><?php echo htmlspecialchars($streets[$i]['color']) ?></td>
+                        <td><?php echo htmlspecialchars(round($streets[$i]['length']), 2) ?>m</td>
                         <td><?php echo htmlspecialchars($streets[$i]['id']) ?></td>
                         <td>
                             <form action="<?php $_SERVER['PHP_SELF'] ?>" method="post" id="deleteForm">

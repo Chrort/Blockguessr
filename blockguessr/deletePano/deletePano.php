@@ -9,7 +9,7 @@ require __DIR__ . '/../../api/pano_data.php';
 require __DIR__ . '/../../api/world_data.php';
 
 $username = $_SESSION['username'];
-$role = getUserData($username, $conn)[0][5];
+$role = getUserData($username, $conn)[0][6];
 
 if (!$_SESSION['loggedIn'] || $role != "admin") {
     header("Location: ../login/login.php");

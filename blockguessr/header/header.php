@@ -4,7 +4,7 @@ require_once '../../config/login_queries.php';
 require_once '../../config/db_connect.php';
 
 $username = $_SESSION["username"];
-$role = getUserData($username, $conn)[0][5];
+$role = getUserData($username, $conn)[0][6];
 
 function getFirstLetter($string)
 {
