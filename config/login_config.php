@@ -53,6 +53,6 @@ if (isset($_POST["submit"]) && $_POST["submit"] == "Login") {
 function goBack()
 {
     $error = $_SESSION['error'] ?? "";
-    header("Location: /serverMap/blockguessr/login/login.php?error=$error");
+    header("Location: ../blockguessr/login/login.php?error=$error");
     exit();
 }

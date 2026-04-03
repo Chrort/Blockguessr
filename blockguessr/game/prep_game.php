@@ -84,7 +84,7 @@ function getExpansion($conn, $locations)
 {
     $idList = implode(',', array_map('intval', $locations));
 
-    $stmt = $conn->prepare("SELECT x FROM panodata WHERE id IN ($idList) ORDER BY x DESC");
+    $stmt = $conn->prepare("SELECT x FROM panodata WHERE id IN ($idList) ORDER BY x ASC");
     $stmt->execute();
     $result = $stmt->get_result();
     $coords = $result->fetch_all(MYSQLI_ASSOC);
@@ -92,7 +92,7 @@ function getExpansion($conn, $locations)
     $maxX = $coords[count($coords) - 1]['x'];
     $minX = $coords[0]['x'];
 
-    $stmt = $conn->prepare("SELECT y FROM panodata WHERE id IN ($idList) ORDER BY y DESC");
+    $stmt = $conn->prepare("SELECT y FROM panodata WHERE id IN ($idList) ORDER BY y ASC");
     $stmt->execute();
     $result = $stmt->get_result();
     $coords = $result->fetch_all(MYSQLI_ASSOC);
@@ -100,5 +100,7 @@ function getExpansion($conn, $locations)
     $maxY = $coords[count($coords) - 1]['y'];
     $minY = $coords[0]['y'];
 
-    return sqrt(($maxX - $minX) ** 2 + ($maxY - $minY) ** 2);
+    $line = abs($maxX - $minX) > abs($maxY - $minY) ? abs($maxX - $minX) : abs($maxY - $minY);
+
+    return [sqrt(($maxX - $minX) ** 2 + ($maxY - $minY) ** 2), $minX, $minY, $line, $maxX, $maxY];
 }

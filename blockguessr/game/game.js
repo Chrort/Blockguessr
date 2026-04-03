@@ -2,6 +2,8 @@ import {mouseDown, checkBrightness} from '../../map/map_functions.js';
 
 let username = document.getElementById("usernameMeta").content;
 
+let viewer;
+
 const guessContainer = document.getElementById("guessContainer");
 const mapContainer = document.getElementById("mapContainer");
 const guessBtn = document.getElementById("guess");
@@ -14,6 +16,8 @@ const idLine = document.getElementById("idLine");
 let transformData = [0, 0];
 let currentStyles = window.getComputedStyle(mapDiv);
 let currentZoomLevel = +currentStyles.getPropertyValue("scale");
+let mapTransforming = 6 * 512;
+let mapTranslateX, mapTranslateY;
 
 let labelDataArray = [];
 let streetDataArray = [];
@@ -26,7 +30,7 @@ let timePlayed = 0;
 let minScale;
 let maxScale = 30;
 
-let expansion;
+let expansion = [];
 let roundData = Array(5);
 let totalPoints = 0;
 
@@ -41,7 +45,7 @@ const fetchData = async () => {
         const response = await fetch('../../api/location_data.php');
         const data = await response.json();
 
-        pannellum.viewer('panorama', {
+        viewer = pannellum.viewer('panorama', {
             "type": "cubemap",
             "autoLoad": true,
             "yaw": 180,
@@ -63,7 +67,7 @@ const fetchData = async () => {
     }catch(error){
         console.error('Error while loading data:', error);
     }
-    fetch('../../api/label_data.php')
+    await fetch('../../api/label_data.php')
         .then(response => response.json())
         .then(data => {
           for(let i = 0; i < data.length; i++){
@@ -73,7 +77,7 @@ const fetchData = async () => {
         })
         .catch(error => console.error('Error while loading data: ', error));
     
-      fetch('../../api/street_data.php')
+      await fetch('../../api/street_data.php')
         .then(respones => respones.json())
         .then(data => {
           for(let j = 0; j < data.length; j++){
@@ -83,21 +87,33 @@ const fetchData = async () => {
         })
         .catch(error => console.error('Error while loading data: ', error));
 
-        fetch('../../api/get_map_expansion.php')
-        .then(response => response.json())
-        .then(data => {
-          expansion = data;
-        })
-        .catch(error => console.error('Error while loading data: ', error));
+      await fetch('../../api/get_map_expansion.php')
+      .then(response => response.json())
+      .then(data => {
+        for(let k = 0; k < data.length; k++){
+          expansion.push(data[k]);
+        }
+      })
+      .catch(error => console.error('Error while loading data: ', error));
 }
 
-window.onload = () => {
-    fetchData();
+window.onload = async () => {
+    await fetchData();
     genMap();
     adaptSize();
+    drawLabels(false);
+    drawStreetLabels(false);
+    adaptBorders();
+
     mapDiv.addEventListener("mousedown", mouseDown);
     mapDiv.addEventListener("click", setPin)
     mapDiv.addEventListener("wheel", mouseScroll, {passive: false});
+
+    mapTranslateX = -1 * ((expansion[1] + expansion[4]) / 2 + mapTransforming - window.innerHeight * 0.4 / currentZoomLevel);
+    mapTranslateY = -1 * ((expansion[2] + expansion[5]) / 2 + mapTransforming - window.innerHeight * 0.4 / currentZoomLevel);
+    mapDiv.style.transform = `translateX(${mapTranslateX}px) translateY(${mapTranslateY}px)`;
+    transformData = [mapTranslateX + additionalXTransform, mapTranslateY + additionalYTransform];
+
     document.addEventListener("keydown", spaceEvent);
     guessBtn.addEventListener("click", () => {
       if(pinIsDown) guess();
@@ -110,6 +126,8 @@ window.onload = () => {
 const guess = () => {
   locScreen = false;
 
+  viewer.destroy();
+
   let d = distance();
   let p = calculateScore(d[0]);
 
@@ -118,8 +136,8 @@ const guess = () => {
   gameInfo.classList.add("resultGameInfo");
   guessBtn.style.display = "none";
 
-  location.style.top = `${locations[currentRound][3] + 512 * 6}px`;
-  location.style.left = `${locations[currentRound][2] + 512 * 6}px`;
+  location.style.top = `${locations[currentRound][3] + mapTransforming}px`;
+  location.style.left = `${locations[currentRound][2] + mapTransforming}px`;
   location.style.scale = 1 / currentZoomLevel;
   location.style.display = "flex";
 
@@ -166,8 +184,8 @@ const distance = () => {
   let pinX = +pinStyles.getPropertyValue("left").slice(0, pinStyles.getPropertyValue("left").length - 2);
   let pinY = +pinStyles.getPropertyValue("top").slice(0, pinStyles.getPropertyValue("top").length - 2);
 
-  let locX = locations[currentRound][2] + 512 * 6;
-  let locY = locations[currentRound][3] + 512 * 6;
+  let locX = locations[currentRound][2] + mapTransforming;
+  let locY = locations[currentRound][3] + mapTransforming;
 
   let d = Math.sqrt((pinX - locX)**2 + (pinY - locY)**2);
 
@@ -175,10 +193,9 @@ const distance = () => {
 }
 
 const calculateScore = d => {
-  let radius = 5 * (1 + 0.0002 * expansion);
+  let radius = 5 * (1 + 0.0002 * expansion[0]);
   if(d < radius) return 5000;
-  let p = 5000 * Math.E**(-20 * (d - 5) / (expansion * 5));
-  console.log(radius, d, p, expansion);
+  let p = 5000 * Math.E**(-20 * (d - 5) / (expansion[0] * 5));
   return Math.round(p);
 }
 
@@ -214,15 +231,18 @@ const nextRound = () => {
   pin.style.display = "none";
   mapDiv.style.top = "0";
   mapDiv.style.left = "0";
-  mapDiv.style.transform = `translateX(-${additionalXTransform}px) translateY(-${additionalYTransform}px)`;
-  transformData = [0, 0];
+  mapDiv.style.transform = `translateX(${mapTranslateX}px) translateY(${mapTranslateY}px)`;
+  transformData = [mapTranslateX + additionalXTransform, mapTranslateY + additionalYTransform];
   idLine.setAttribute("x1", "0");
   idLine.setAttribute("y1", "0");
   idLine.setAttribute("x2", "0");
   idLine.setAttribute("y2", "0");
   adaptSize();
+  drawLabels(false);
+  drawStreetLabels(false);
+  adaptBorders();
 
-  pannellum.viewer('panorama', {
+  viewer = pannellum.viewer('panorama', {
             "type": "cubemap",
             "autoLoad": true,
             "yaw": 180,
@@ -242,6 +262,7 @@ const nextRound = () => {
 
 const spaceEvent = (e) => {
   if(e.code == "Space") btnAction();
+  if(e.code == "KeyN") align();
 }
 
 const btnAction = () => {
@@ -255,6 +276,11 @@ const btnAction = () => {
     }else if(!locScreen && currentRound < 4){
       nextRound();
     }
+}
+
+const align = () => {
+  viewer.setYaw(180);
+  viewer.setNorthOffset(0);
 }
 
 const genMap = type => {
@@ -350,8 +376,8 @@ const drawStreetLabels = create => {
           xCoord = +coords[Math.round(streetDataArray[i][3].split(" ").length / 2)].split(",")[0];
           yCoord = +coords[Math.round(streetDataArray[i][3].split(" ").length / 2)].split(",")[1];
         }
-        streetLabelDiv.style.top = `${yCoord + 512 * 6}px`;
-        streetLabelDiv.style.left = `${xCoord + 512 * 6}px`;
+        streetLabelDiv.style.top = `${yCoord + mapTransforming}px`;
+        streetLabelDiv.style.left = `${xCoord +  mapTransforming}px`;
 
         document.getElementById("streetLabelDivContainer").appendChild(streetLabelDiv);
       }
@@ -381,8 +407,8 @@ const drawLabels = create => {
 
       //positions divs and sets font-size
       let labelDiv = document.getElementById(`mapLabel_${+labelDataArray[i][0]}`);
-      labelDiv.style.left = `${+labelDataArray[i][2] + 512 * 6}px`;
-      labelDiv.style.top = `${+labelDataArray[i][3] + 512 * 6}px`;
+      labelDiv.style.left = `${+labelDataArray[i][2] + mapTransforming}px`;
+      labelDiv.style.top = `${+labelDataArray[i][3] + mapTransforming}px`;
       labelDiv.style.fontSize = `${20 / currentZoomLevel**.7}px`;
 
       //styles/displays different types differently
@@ -500,10 +526,10 @@ const adaptBorders = () => {
 }
 
 //adapt map zoom
-
 const adaptSize = () => {
-    let size = window.innerHeight * 0.8 / (512 * 10 - 661);
-    minScale = size;
+    let denumerator = expansion[3] * 1.1 > (512 * 10 - 661) ? (512 * 10 - 661) : expansion[3] * 1.1;
+    let size = window.innerHeight * 0.8 / denumerator;
+    minScale = window.innerHeight * 0.8 / (512 * 10 - 661);
     mapDiv.style.scale = size;
     currentZoomLevel = size;
     drawLabels();

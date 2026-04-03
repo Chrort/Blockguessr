@@ -43,7 +43,7 @@ const displaySummary = () => {
 
     average.innerHTML = `${Math.round((averageDistance / 5) * 100) / 100}`;
     total.innerHTML = `${totalPoints}`;
-    document.getElementById("progress").innerHTML = `+${Math.round(newXp(totalPoints))}xp | ${Math.round((userXp - (100 * currentLevel ** 2)) / xpToNextLevel * 100)}%`;
+    document.getElementById("progress").innerHTML = `+${Math.round(newXp(totalPoints))}xp | ${Math.round((userXp - (25 * currentLevel ** 2)) / xpToNextLevel * 100)}%`;
 }
 
 const newXp = totalPoints => {

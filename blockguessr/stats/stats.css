@@ -27,6 +27,7 @@ main{
 abbr{
     text-decoration: none;
     cursor: pointer;
+    margin: 5px;
 }
 
 #stats, h1, #medals, #recentGames{

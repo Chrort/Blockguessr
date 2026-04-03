@@ -84,12 +84,12 @@ function countMedals(array $highscores): array
     <main>
         <h1>Statistic for <?= $username ?></h1>
         <div id="xp">
-            <div id="currentLevel"><abbr title="Level <?= $levelData[0] ?> at <?= 100 * $levelData[0] ** 2 ?>xp"><?= $levelData[0] ?></abbr></div>
+            <div id="currentLevel"><abbr title="Level <?= $levelData[0] ?> at <?= 25 * $levelData[0] ** 2 ?>xp"><?= $levelData[0] ?></abbr></div>
             <div id="bar">
-                <div id="currentBar" style="width: <?= ($xp - (100 * ($levelData[0]) ** 2)) / $levelData[1] * 100 ?>%"></div>
-                <p id="progress"><?= round(($xp - (100 * ($levelData[0]) ** 2)) / $levelData[1] * 100, 2) ?>%</p>
+                <div id="currentBar" style="width: <?= ($xp - (25 * ($levelData[0]) ** 2)) / $levelData[1] * 100 ?>%"></div>
+                <p id="progress"><?= round(($xp - (25 * ($levelData[0]) ** 2)) / $levelData[1] * 100, 2) ?>%</p>
             </div>
-            <div id="nextLevel"><abbr title="Level <?= $levelData[0] + 1 ?> at <?= 100 * ($levelData[0] + 1) ** 2 ?>xp"><?= $levelData[0] + 1 ?></abbr></div>
+            <div id="nextLevel"><abbr title="Level <?= $levelData[0] + 1 ?> at <?= 25 * ($levelData[0] + 1) ** 2 ?>xp"><?= $levelData[0] + 1 ?></abbr></div>
         </div>
         <div id="medals">
             <?php for ($i = count(countMedals($highscores)) - 1; $i > -1; $i--): ?>

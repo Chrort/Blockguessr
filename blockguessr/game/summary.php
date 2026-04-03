@@ -56,7 +56,7 @@ $levelData = getUserLevelInfo($xp);
         <div id="xp">
             <div id="currentLevel"><?= $levelData[0] ?></div>
             <div id="bar">
-                <div id="currentBar" style="width: <?= ($xp - (100 * ($levelData[0]) ** 2)) / $levelData[1] * 100 ?>%"></div>
+                <div id="currentBar" style="width: <?= ($xp - (25 * ($levelData[0]) ** 2)) / $levelData[1] * 100 ?>%"></div>
                 <p id="progress"></p>
             </div>
             <div id="nextLevel"><?= $levelData[0] + 1 ?></div>
