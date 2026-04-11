@@ -21,7 +21,7 @@ header{
 
 body{
     width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
     overflow-y: scroll;
     overflow-x: hidden;
 }
@@ -38,16 +38,16 @@ img{
 #gallery{
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 30px;
     padding: 30px;
 }
 
 .galleryElement{
     display: block;
-    border: 2px red;
     border-radius: 20px;
-    width: 416px;
-    height: 234px;
+    width: clamp(300px, 30vw, 50vw);
+    aspect-ratio: 48 / 27;
     z-index: 1;
     transition: scale .5s;
 }
@@ -172,28 +172,32 @@ img{
 
 #maxImage{
     position: fixed;
-    width: calc(100%);
+    width: 100%;
     height: calc(100% - 6vh);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     z-Index: 3;
-    background-Color: rgba(255, 255, 255, .95);
+    background-Color: rgba(255, 255, 255);
     display: none;
 }
 
 #close{
     position: absolute;
     right: 30px;
-    top: 30px;
+    top: 1.5vh;
     border-radius: 50%;
     height: 4.5vh;
     width: 4.5vh;
-    border: 1px solid;
+    border: 1px solid black;
     font-size: 2em;
-    background-color: rgba(167, 167, 167, 0.419);
+    background-color: rgba(167, 167, 167);
     cursor: pointer;
-    border: none;
+    transition: transform .5s;
+}
+
+#close:hover{
+    transform: rotateZ(-90deg);
 }
 
 #currentSymbol{
@@ -209,10 +213,11 @@ img{
     height: 4.5vh;
     width: 4.5vh;
     background-color: rgb(167, 167, 167);
+    transition: transform .5s;
 }
 
 #currentSymbol:hover{
-    background-color: rgb(221, 221, 221);
+    transform: rotateZ(45deg);
 }
 
 #editForm{
