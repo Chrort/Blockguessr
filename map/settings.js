@@ -1,4 +1,4 @@
-import { drawLabels, drawStreetLabels} from "./map.js";
+import { map } from "./map.js";
 
 export const checkboxes = document.querySelectorAll("input[type=checkbox]");
 const menu = document.getElementById("menu");
@@ -12,11 +12,14 @@ let currentState = 0;
 export const setupListener = () => {
     //opening/closing
     menu.addEventListener("click", settingsAnimation);
+    document.addEventListener("keydown", e => {
+        if(e.key == "s") settingsAnimation();
+    });
     //setup checkboxes
     for(const checkbox of checkboxes){
         checkbox.addEventListener("change", () => {
-        drawLabels(false);
-        drawStreetLabels(false);
+        map.drawLabels(false);
+        map.drawStreetLabels(false);
         })
     }
     if(+incorrectPwd == 1){

@@ -1,4 +1,4 @@
-import {getMousePos, updateCoords, copyCoords, currentZoomLevel, mapDiv} from "./map.js";
+import {map, copyCoords, updateCoords, mapDiv} from "./map.js";
 
 //measure area
 const canvas = document.getElementById("measureCanvas");
@@ -7,6 +7,10 @@ const result = document.getElementById("result");
 const escapeInfo = document.getElementById("escape");
 const measureArea = document.getElementById("measureArea");
 const measureDistance = document.getElementById("measureDistance");
+
+document.addEventListener("wheel", () => {
+  drawPoints();
+});
 
 export let points = [];
 export let mode = "";
@@ -71,8 +75,8 @@ export const removePoint = e => {
 }
 
 export const pushPoint = e => {
-  let x = Math.round(getMousePos(e, currentZoomLevel).x);
-  let y = Math.round(getMousePos(e, currentZoomLevel).y);
+  let x = Math.round(map.getMousePos(e).x);
+  let y = Math.round(map.getMousePos(e).y);
   points.push({x, y});
   drawPoints();
 }
@@ -83,14 +87,14 @@ export const drawPoints = () => {
   for(let i = 0; i < points.length; i++){
     ctx.beginPath();
     ctx.fillStyle = "red";
-    ctx.fillRect(points[i].x - (8 / currentZoomLevel**.7) * .5, points[i].y - (8 / currentZoomLevel**.7) * .5, 8 / currentZoomLevel**.7, 8 / currentZoomLevel**.7)
+    ctx.fillRect(points[i].x - (8 / map.currentZoomLevel**.7) * .5, points[i].y - (8 / map.currentZoomLevel**.7) * .5, 8 / map.currentZoomLevel**.7, 8 / map.currentZoomLevel**.7)
     ctx.stroke();
   }
   connectPoints();
 }
 
 export const connectPoints = () => {
-  ctx.lineWidth = 3 / currentZoomLevel**.7 + .5;
+  ctx.lineWidth = 3 / map.currentZoomLevel**.7 + .5;
   ctx.strokeStyle = "red";
   switch(mode){
     case "area":

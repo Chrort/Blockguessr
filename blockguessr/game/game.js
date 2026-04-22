@@ -1,4 +1,4 @@
-import {mouseDown, checkBrightness} from '../../map/map_functions.js';
+import { Map } from '../../map/map_class.js';
 
 let username = document.getElementById("usernameMeta").content;
 
@@ -13,22 +13,17 @@ const gameInfo = document.getElementById("gameInfo");
 const location = document.getElementById("location");
 const idLine = document.getElementById("idLine");
 
-let transformData = [0, 0];
-let currentStyles = window.getComputedStyle(mapDiv);
-let currentZoomLevel = +currentStyles.getPropertyValue("scale");
-let mapTransforming = 6 * 512;
+let map = new Map(mapDiv, [-6, 4, -6, 4]);
+
+let mapTransforming = map.xTransform > map.yTransform ? map.xTransform : map.yTransform;
 let mapTranslateX, mapTranslateY;
 
-let labelDataArray = [];
-let streetDataArray = [];
 let locations = [];
 
 let pinIsDown = false;
 let locScreen = true;
 let currentRound = 0;
 let timePlayed = 0;
-let minScale;
-let maxScale = 30;
 
 let expansion = [];
 let roundData = Array(5);
@@ -40,7 +35,7 @@ let additionalXTransform = +cB4.getPropertyValue("width").slice(0, cB4.getProper
 const cB1 = window.getComputedStyle(document.getElementById("cB1"));
 let additionalYTransform = +cB1.getPropertyValue("height").slice(0, cB1.getPropertyValue("height").length - 2);
 
-const fetchData = async () => {
+const fetchGameData = async () => {
     try{
         const response = await fetch('../../api/location_data.php');
         const data = await response.json();
@@ -67,60 +62,41 @@ const fetchData = async () => {
     }catch(error){
         console.error('Error while loading data:', error);
     }
-    await fetch('../../api/label_data.php')
-        .then(response => response.json())
-        .then(data => {
-          for(let i = 0; i < data.length; i++){
-            labelDataArray.push(data[i]);
-          }
-          drawLabels(true);
-        })
-        .catch(error => console.error('Error while loading data: ', error));
-    
-      await fetch('../../api/street_data.php')
-        .then(respones => respones.json())
-        .then(data => {
-          for(let j = 0; j < data.length; j++){
-            streetDataArray.push(data[j]);
-          }
-          drawStreetLabels(true);
-        })
-        .catch(error => console.error('Error while loading data: ', error));
 
-      await fetch('../../api/get_map_expansion.php')
-      .then(response => response.json())
-      .then(data => {
-        for(let k = 0; k < data.length; k++){
-          expansion.push(data[k]);
-        }
-      })
-      .catch(error => console.error('Error while loading data: ', error));
+    await fetch('../../api/get_map_expansion.php')
+    .then(response => response.json())
+    .then(data => {
+      for(let k = 0; k < data.length; k++){
+        expansion.push(data[k]);
+      }
+    })
+    .catch(error => console.error('Error while loading data: ', error));
 }
 
 window.onload = async () => {
-    await fetchData();
-    genMap();
-    adaptSize();
-    drawLabels(false);
-    drawStreetLabels(false);
-    adaptBorders();
+  map.genMap(undefined, "../../");
+  await map.fetchData([true, false, true], "../../");
+  await fetchGameData();
 
-    mapDiv.addEventListener("mousedown", mouseDown);
-    mapDiv.addEventListener("click", setPin)
-    mapDiv.addEventListener("wheel", mouseScroll, {passive: false});
+  adaptSize();
+  map.drawLabels(true);
+  map.drawStreetLabels(false);
+  map.adaptBorders();
 
-    mapTranslateX = -1 * ((expansion[1] + expansion[4]) / 2 + mapTransforming - window.innerHeight * 0.4 / currentZoomLevel);
-    mapTranslateY = -1 * ((expansion[2] + expansion[5]) / 2 + mapTransforming - window.innerHeight * 0.4 / currentZoomLevel);
-    mapDiv.style.transform = `translateX(${mapTranslateX}px) translateY(${mapTranslateY}px)`;
-    transformData = [mapTranslateX + additionalXTransform, mapTranslateY + additionalYTransform];
+  mapDiv.addEventListener("click", setPin);
 
-    document.addEventListener("keydown", spaceEvent);
-    guessBtn.addEventListener("click", () => {
-      if(pinIsDown) guess();
-    });
-    setInterval(() => {
-      timePlayed++;
-    }, 100);
+  mapTranslateX = -1 * ((expansion[1] + expansion[4]) / 2 + mapTransforming - window.innerHeight * 0.4 / map.currentZoomLevel);
+  mapTranslateY = -1 * ((expansion[2] + expansion[5]) / 2 + mapTransforming - window.innerHeight * 0.4 / map.currentZoomLevel);
+  mapDiv.style.transform = `translateX(${mapTranslateX}px) translateY(${mapTranslateY}px)`;
+  map.transformData = [mapTranslateX + additionalXTransform, mapTranslateY + additionalYTransform];
+
+  document.addEventListener("keydown", spaceEvent);
+  guessBtn.addEventListener("click", () => {
+    if(pinIsDown) guess();
+  });
+  setInterval(() => {
+    timePlayed++;
+  }, 100);
 }
 
 const guess = () => {
@@ -138,14 +114,14 @@ const guess = () => {
 
   location.style.top = `${locations[currentRound][3] + mapTransforming}px`;
   location.style.left = `${locations[currentRound][2] + mapTransforming}px`;
-  location.style.scale = 1 / currentZoomLevel;
+  location.style.scale = 1 / map.currentZoomLevel;
   location.style.display = "flex";
 
   let size = calcSize(d[1], d[2], d[3], d[4]);
 
-  transformData = [0, 0];
+  map.transformData = [0, 0];
   mapDiv.style.scale = size;
-  currentZoomLevel = size;
+  map.currentZoomLevel = size;
 
   let pTransformData = calcTransform(parseInt(d[1]), parseInt(d[2]), parseInt(d[3]), parseInt(d[4]));
 
@@ -153,11 +129,11 @@ const guess = () => {
   mapDiv.style.left = `${pTransformData[0]}px`;
   mapDiv.style.transform = `translateX(-${additionalXTransform}px) translateY(-${additionalYTransform}px)`;
 
-  drawLabels(false);
-  drawStreetLabels(false);
-  adaptBorders();
-  adaptIdLine();
-  adjustPins();
+  map.drawLabels(false);
+  map.drawStreetLabels(false);
+  map.adaptBorders();
+  map.adjustPins(location);
+  map.adaptIdLine(idLine);
 
   guessContainer.style.width = "300px";
   guessContainer.style.height = "345px";
@@ -206,7 +182,7 @@ const calcSize = (x1, y1, x2, y2) => {
 
   let p = w / (window.innerHeight * 0.85);
 
-  if(p**-1 * 0.75 > maxScale) return maxScale;
+  if(p**-1 * 0.75 > map.maxScale) return map.maxScale;
 
   return p**-1 * 0.75;
 }
@@ -214,7 +190,7 @@ const calcSize = (x1, y1, x2, y2) => {
 const calcTransform = (x1, y1, x2, y2) => {
   let x = Math.abs((x1 + x2) / 2);
   let y = Math.abs((y1 + y2) / 2);
-  return [(x * -1 + additionalXTransform) * currentZoomLevel + .5 * .85 * window.innerHeight, (y * -1 + additionalYTransform) * currentZoomLevel + .5 * .85 * window.innerHeight];
+  return [(x * -1 + additionalXTransform) * map.currentZoomLevel + .5 * .85 * window.innerHeight, (y * -1 + additionalYTransform) * map.currentZoomLevel + .5 * .85 * window.innerHeight];
 }
 
 const nextRound = () => {
@@ -232,15 +208,15 @@ const nextRound = () => {
   mapDiv.style.top = "0";
   mapDiv.style.left = "0";
   mapDiv.style.transform = `translateX(${mapTranslateX}px) translateY(${mapTranslateY}px)`;
-  transformData = [mapTranslateX + additionalXTransform, mapTranslateY + additionalYTransform];
+  map.transformData = [mapTranslateX + additionalXTransform, mapTranslateY + additionalYTransform];
   idLine.setAttribute("x1", "0");
   idLine.setAttribute("y1", "0");
   idLine.setAttribute("x2", "0");
   idLine.setAttribute("y2", "0");
   adaptSize();
-  drawLabels(false);
-  drawStreetLabels(false);
-  adaptBorders();
+  map.drawLabels(false);
+  map.drawStreetLabels(false);
+  map.adaptBorders();
 
   viewer = pannellum.viewer('panorama', {
             "type": "cubemap",
@@ -283,290 +259,29 @@ const align = () => {
   viewer.setNorthOffset(0);
 }
 
-const genMap = type => {
-
-  type == undefined ? type = "maps" : "maps";
-
-  for(let i = -6; i < 4; i++){
-    for(let j = -6; j < 4; j++){
-      let mapCanvasE = document.createElement("div");
-      mapCanvasE.id = `${j},${i}`;
-      mapCanvasE.className = "mapCanvas";
-      mapDiv.appendChild(mapCanvasE);
-      const imgSrc = `../../img/${type}/${j},${i}.png`
-      const mapImg = document.createElement("img");
-      mapImg.src = imgSrc;
-      mapImg.onload = () => {
-          mapImg.className = "mapImgs"
-          try{
-            document.getElementById(`${j},${i}`).removeChild(document.getElementById(`${j},${i}`).firstChild);
-          }
-          catch{
-            console.log("First load");
-          }
-          document.getElementById(`${j},${i}`).appendChild(mapImg);
-      };
-    }
-  }
-}
-
-// Zoom ---------------------------------------------------------------------------
-
-const mouseScroll = e => {
-  let zoomStep = 1.4;
-  let y = e.deltaY;
-
-  //mouse pos before scale
-  let mouseX = getMousePos(e, currentZoomLevel).x;
-  let mouseY = getMousePos(e, currentZoomLevel).y;
-
-  //check if scrolled up/down & max/min zoom level 
-  y > 0 ? currentZoomLevel /= zoomStep : currentZoomLevel *= zoomStep;
-  currentZoomLevel < minScale ? currentZoomLevel = minScale : currentZoomLevel > maxScale ? currentZoomLevel = maxScale : null;
-  currentZoomLevel = Math.round(currentZoomLevel * 100) / 100;
-  mapDiv.style.scale = currentZoomLevel;
-
-  drawLabels(false);
-  drawStreetLabels(false);
-  adaptBorders();
-  adaptIdLine();
-  adjustPins();
-
-  //mouse pos after scale
-  let mouseX2 = getMousePos(e, currentZoomLevel).x;
-  let mouseY2 = getMousePos(e, currentZoomLevel).y;
-
-  //transforms canvas based on mouse positions
-  mapDiv.style.transform = `translateX(${(mouseX2 - mouseX + transformData[transformData.length - 2] - additionalXTransform)}px) translateY(${(mouseY2 - mouseY + transformData[transformData.length - 1] - additionalYTransform)}px)`;
-
-  //arrays stores current scale data ([x, y])
-  transformData.push(mouseX2 - mouseX + transformData[transformData.length - 2], mouseY2 - mouseY + transformData[transformData.length - 1]);
-  transformData.splice(0, 2);
-}
-
-//street labels
-const drawStreetLabels = create => {
-
-  //distance between labels
-  let frequency = 150;
-
-  for(let i = 0; i < streetDataArray.length; i++){
-    if(create){
-      for(let j = 0; j < streetDataArray[i][3].split(" ").length; j+=frequency){
-        let streetLabelDiv = document.createElement("div");
-        streetLabelDiv.classList.add(`${streetDataArray[i][1]}_label`, 'streetLabel');
-        streetLabelDiv.id = `${streetDataArray[i][1]}_${streetDataArray[i][0]}_label_${j}`;  
-        streetLabelDiv.innerHTML = streetDataArray[i][1];
-        streetLabelDiv.style.backgroundColor = streetDataArray[i][2];
-        streetLabelDiv.style.color = checkBrightness(streetDataArray[i][2]);
-
-        let coords = streetDataArray[i][3].split(" ");
-        let xCoord;
-        let yCoord;
-
-        //checks for too short roads
-        if(streetDataArray[i][3].split(" ").length > frequency){
-          try{
-            xCoord = +coords[j + Math.round(frequency / 2)].split(",")[0];
-            yCoord = +coords[j + Math.round(frequency / 2)].split(",")[1];
-          } catch{
-            null;
-          }
-        }else{
-          xCoord = +coords[Math.round(streetDataArray[i][3].split(" ").length / 2)].split(",")[0];
-          yCoord = +coords[Math.round(streetDataArray[i][3].split(" ").length / 2)].split(",")[1];
-        }
-        streetLabelDiv.style.top = `${yCoord + mapTransforming}px`;
-        streetLabelDiv.style.left = `${xCoord +  mapTransforming}px`;
-
-        document.getElementById("streetLabelDivContainer").appendChild(streetLabelDiv);
-      }
-    }
-
-    for(let k = 0; k < streetDataArray[i][3].split(" ").length; k+=frequency){
-      let streetLabelDiv = document.getElementById(`${streetDataArray[i][1]}_${streetDataArray[i][0]}_label_${k}`);
-
-      currentZoomLevel < 1.5 ? streetLabelDiv.style.display = "none" : streetLabelDiv.style.display = "flex";
-
-      streetLabelDiv.style.fontSize = `${14 / currentZoomLevel**.7}px`;
-      streetLabelDiv.style.padding = `0 ${2 / currentZoomLevel**.7}px`;
-    }
-  }
-}
-
-const drawLabels = create => {
-    for(var i = 0; i < labelDataArray.length; i++){
-
-      //creates div only once
-      if(create){
-        let labelDiv = document.createElement("div");
-        labelDiv.className = "labelDiv";
-        labelDiv.id = `mapLabel_${+labelDataArray[i][0]}`;
-        mapDiv.appendChild(labelDiv);
-      }
-
-      //positions divs and sets font-size
-      let labelDiv = document.getElementById(`mapLabel_${+labelDataArray[i][0]}`);
-      labelDiv.style.left = `${+labelDataArray[i][2] + mapTransforming}px`;
-      labelDiv.style.top = `${+labelDataArray[i][3] + mapTransforming}px`;
-      labelDiv.style.fontSize = `${20 / currentZoomLevel**.7}px`;
-
-      //styles/displays different types differently
-      switch(labelDataArray[i][4]){
-        case "province":
-          if(currentZoomLevel <= .35){
-            labelDiv.style.color = "black";
-            labelDiv.style.fontWeight = "bolder";
-            labelDiv.style.fontSize = `${25 / currentZoomLevel**.7}px`;
-            labelDiv.innerHTML = `${labelDataArray[i][1].toUpperCase()}`;
-            labelDiv.style.translate = "-50% 0"
-          }else{
-            labelDiv.innerHTML = ``;
-          }
-          break;
-        case "town":
-          if(currentZoomLevel > .2){
-            labelDiv.style.color = "black";
-            labelDiv.innerHTML = `${labelDataArray[i][1]}`;
-            labelDiv.style.translate = "-50% 0"
-          }else{
-            labelDiv.innerHTML = ``;
-          }
-          break;
-        case "waters":
-          if(currentZoomLevel > .3){
-            labelDiv.style.color = "blue";
-            labelDiv.innerHTML = `${labelDataArray[i][1]}`;
-            labelDiv.style.translate = "-50% 0"
-          }
-          else{
-            labelDiv.innerHTML = ``;
-          }
-          break;
-        case "landscape":
-          if(currentZoomLevel > .4){
-            labelDiv.style.color = "green";
-            labelDiv.innerHTML = `${labelDataArray[i][1]}`;
-            labelDiv.style.translate = "-50% 0"
-          }
-          else{
-            labelDiv.innerHTML = ``;
-          }
-          break;
-        case "point":
-          if(currentZoomLevel > .6){
-            labelDiv.style.color = "black";
-            labelDiv.innerHTML = `▪${labelDataArray[i][1]}`;
-          }
-          else{
-            labelDiv.innerHTML = ``;
-          }
-          break;
-        default:
-      }
-      //adjust postion
-      labelDiv.style.transform = `translateY(-${parseFloat(window.getComputedStyle(labelDiv).getPropertyValue('font-size')) / 2}px)`;
-  }
-  currentZoomLevel < maxScale ? checkCollision() : null;
-}
-
-const checkCollision = () => {
-  for(let i = 0; i < labelDataArray.length; i++){
-    let div = document.getElementById(`mapLabel_${+labelDataArray[i][0]}`);
-    let size = div.getBoundingClientRect();
-
-    for(let j = i + 1; j < labelDataArray.length; j++){
-      if(j == i) continue;
-      let compareDiv = document.getElementById(`mapLabel_${+labelDataArray[j][0]}`);
-      let compareSize = compareDiv.getBoundingClientRect();
-      
-      if(size.top < compareSize.bottom && size.bottom > compareSize.top && size.left < compareSize.right && size.right > compareSize.left){
-        deleteDecider(i, j, div, compareDiv).innerHTML = ``;
-      }
-    }
-  }
-}
-const deleteDecider = (i, j, div, compareDiv) => {
-  switch(labelDataArray[i][4]){
-    case "province":
-      return compareDiv;
-    case "town":
-      if(labelDataArray[j][4] == "province"){
-        return div;
-      }else{
-        return compareDiv;
-      }
-    case "waters":
-      if(labelDataArray[j][4] == "province" || labelDataArray[j][4] == "town"){
-        return div;
-      }
-      else{
-        return compareDiv;
-      }
-    case "landscape":
-      if(labelDataArray[j][4] == "province" || labelDataArray[j][4] == "town" || labelDataArray[j][4] == "waters"){
-        return div;
-      }
-      else{
-        return compareDiv;
-      }
-    case "point":
-      return div;
-    default:
-      return div;
-  }
-}
-
-//adapt borders
-const adaptBorders = () => {
-  const borders = document.getElementsByClassName("borderPolyline");
-  [].forEach.call(borders, (e) => {
-    e.style.strokeWidth = 4 / currentZoomLevel**.4;
-  })
-}
-
 //adapt map zoom
 const adaptSize = () => {
     let denumerator = expansion[3] * 1.1 > (512 * 10 - 661) ? (512 * 10 - 661) : expansion[3] * 1.1;
-    let size = window.innerHeight * 0.8 / denumerator;
-    minScale = window.innerHeight * 0.8 / (512 * 10 - 661);
+    map.minScale = window.innerHeight * 0.8 / (512 * 10 - 661);
+    let size = (window.innerHeight * 0.8 / denumerator) > map.maxScale ?map. maxScale : (window.innerHeight * 0.8 / denumerator);
     mapDiv.style.scale = size;
-    currentZoomLevel = size;
-    drawLabels();
+    map.currentZoomLevel = size;
 }
 
 const setPin = e => {
   if(locScreen){
-    let x = getMousePos(e, currentZoomLevel).x;
-    let y = getMousePos(e, currentZoomLevel).y;
+    let x = map.getMousePos(e).x;
+    let y = map.getMousePos(e).y;
 
     let pin = document.getElementById("pin");
 
-    pin.style.scale = 1 / currentZoomLevel;
+    pin.style.scale = 1 / map.currentZoomLevel;
     pin.style.left = `${x}px`;
     pin.style.top = `${y}px`;
     pin.style.display = "block";
 
     pinIsDown = true;
   }
-}
-
-const adjustPins = () => {
-  let pin = document.getElementById("pin");
-  pin.style.scale = 1 / currentZoomLevel;
-  location.style.scale = 1 / currentZoomLevel;
-}
-
-const getMousePos = (e, currentZoomLevel) => {
-  let rect = mapDiv.getBoundingClientRect();
-  let x = (e.clientX - rect.left - mapDiv.clientLeft) / currentZoomLevel;
-  let y = (e.clientY - rect.top - mapDiv.clientTop) / currentZoomLevel;
-  return {x, y};
-}
-
-const adaptIdLine = () => {
-  idLine.style.strokeWidth = 5 / currentZoomLevel**.6;
-  idLine.style.strokeDasharray = `${10 / currentZoomLevel} ${5 / currentZoomLevel}`;
 }
 
 //guess container animations
