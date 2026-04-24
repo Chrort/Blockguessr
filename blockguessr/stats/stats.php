@@ -117,8 +117,10 @@ function countMedals(array $highscores): array
                     </tr>
                 </thead>
                 <tbody>
-                    <?php for ($i = count($games) - 1; $i >= 0; $i--): ?>
-                        <tr>
+                    <?php for ($i = count($games) - 1; $i >= 0; $i--):
+                        $class = $i > count($games) - 26 ? "tr_display" : "tr_hide";
+                    ?>
+                        <tr id="tr_<?= $i ?>" class="<?= $class ?>">
                             <td><?= getMapNameById($conn, $games[$i]['map_id'])[0] ?></td>
                             <td><?= $games[$i]['score'] ?></td>
                             <td><?= $games[$i]['time'] ?>s</td>
@@ -127,8 +129,10 @@ function countMedals(array $highscores): array
                     <?php endfor; ?>
                 </tbody>
             </table>
+            <button>Show more</button>
         </section>
     </main>
+    <script src="./stats.js"></script>
 </body>
 
 </html>

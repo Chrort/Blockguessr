@@ -101,6 +101,7 @@ td{
     height: 100%;
     background: linear-gradient(127deg,rgba(234, 192, 62, 1) 2%, rgba(235, 188, 44, 1) 42%, rgba(252, 249, 207, 1) 77%, rgba(249, 204, 68, 1) 100%);
     z-index: 1;
+    transition: width 1.5s ease-in-out;
 }
 
 #exitToStartpage{

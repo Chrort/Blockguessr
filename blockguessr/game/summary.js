@@ -4,6 +4,7 @@ const exit = document.getElementById("exitToStartpage");
 const currentLevel = +document.getElementById("levelData0").content;
 const xpToNextLevel = +document.getElementById("levelData1").content;
 const userXp = +document.getElementById("userXp").content;
+const missingXp = xpToNextLevel - (userXp - 25 * currentLevel ** 2);
 
 let roundData = JSON.parse(localStorage.getItem("roundData"));
 let totalPoints = +localStorage.getItem("totalP");
@@ -43,7 +44,22 @@ const displaySummary = () => {
 
     average.innerHTML = `${Math.round((averageDistance / 5) * 100) / 100}`;
     total.innerHTML = `${totalPoints}`;
-    document.getElementById("progress").innerHTML = `+${Math.round(newXp(totalPoints))}xp | ${Math.round((userXp - (25 * currentLevel ** 2)) / xpToNextLevel * 100)}%`;
+    if(newXp(totalPoints) < missingXp){
+        document.getElementById("currentBar").style.width = `${((userXp + newXp(totalPoints)) - (25 * (currentLevel) ** 2)) / xpToNextLevel * 100}%`;
+        setTimeout(() => {
+            document.getElementById("progress").innerHTML = `+${Math.round(newXp(totalPoints))}xp | ${Math.round((userXp + newXp(totalPoints) - (25 * currentLevel ** 2)) / xpToNextLevel * 100)}%`;
+        }, 1500);
+    }else{
+        const newLevel = Math.floor(0.2 * (userXp + newXp(totalPoints)) ** 0.5);
+        const newXpToNextLevel = (25 * (newLevel + 1) ** 2) - (25 * (newLevel) ** 2);
+        document.getElementById("currentBar").style.width = `${((userXp + newXp(totalPoints)) - (25 * newLevel ** 2)) / newXpToNextLevel * 100}%`;
+        setTimeout(() => {
+            document.getElementById("progress").innerHTML = `+${Math.round(newXp(totalPoints))}xp | ${Math.round((userXp + newXp(totalPoints) - (25 * (newLevel) ** 2)) / newXpToNextLevel * 100)}%`;
+            document.getElementById("currentLevel").innerHTML = newLevel;
+            document.getElementById("nextLevel").innerHTML = newLevel + 1;
+        }, 1500);
+    }
+    
 }
 
 const newXp = totalPoints => {

@@ -23,7 +23,7 @@ function getUserXp(mysqli $conn, int $id)
     return $name[0][0];
 }
 
-function getUserLevelInfo(int $xp)
+function getUserLevelInfo(int $xp): array
 {
     (int)$level = floor(0.2 * ($xp) ** 0.5);
 

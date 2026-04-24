@@ -24,13 +24,19 @@ main{
     align-items: center;
 }
 
+button{
+    background-color: transparent;
+    cursor: pointer;
+    border: none;
+}
+
 abbr{
     text-decoration: none;
     cursor: pointer;
     margin: 5px;
 }
 
-#stats, h1, #medals, #recentGames{
+#stats, h1, #medals, #recentGames, #recentGames > button{
     width: 50%;
     padding: 20px;
     box-shadow: 0 0 5px black;
@@ -39,8 +45,20 @@ abbr{
     align-items: center;
     flex-direction: column;
     gap: 10px;
-    font-size: 1.6em;
+    font-size: 1.6rem;
     border-radius: 20px;
+}
+
+#recentGames > button{
+    padding: 5px;
+    transition: box-shadow .5s;
+    width: 100%;
+    border-radius: 10px;
+    font-size: 1.4rem;
+}
+
+#recentGames > button:hover{
+    box-shadow: 0 0 10px black;
 }
 
 #games{
@@ -61,6 +79,10 @@ th{
 
 tr{
     border-top: 1px solid;
+}
+
+tr.tr_hide{
+    display: none !important;
 }
 
 tr:nth-child(even){
@@ -155,4 +177,3 @@ h1{
     background: linear-gradient(127deg,rgba(234, 192, 62, 1) 2%, rgba(235, 188, 44, 1) 42%, rgba(252, 249, 207, 1) 77%, rgba(249, 204, 68, 1) 100%);
     z-index: 1;
 }
-

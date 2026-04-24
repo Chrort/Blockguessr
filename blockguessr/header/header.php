@@ -26,6 +26,7 @@ function getFirstLetter($string)
             <a href="../startpage/startpage.php" class="dropdownElement firstElement">Startpage</a>
             <a href="../profile/profile.php" class="dropdownElement">Profile</a>
             <a href="../stats/stats.php" class="dropdownElement">Statistics</a>
+            <!--<a href="../achievments/achievment.php" class="dropdownElement">Achievments</>-->
             <?php if ($role == "admin"): ?>
                 <a href="../addPano/add_pano.php" class="dropdownElement">Add Panorama</a>
                 <a href="../deletePano/deletePano.php" class="dropdownElement">Delete Panorama</a>
