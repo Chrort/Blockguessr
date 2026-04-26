@@ -46,7 +46,7 @@ $typePoly = '';
 
 $elements = getLabels($conn, $sortLabels, $order);
 $borders = getBorders($conn, $sortBorders, $order);
-$streets = getStreets($conn, $sortStreets, $order);
+$streets = streetLengthCheck(getStreets($conn, $sortStreets, $order));
 $polygons = getPolygons($conn, $sortPoly, $order);
 
 //call functions
@@ -82,6 +82,31 @@ if (isset($_POST['submitPoly'])) {
 
 if (isset($_POST['deleteLabel']) || isset($_POST['deleteBorder']) || isset($_POST['deleteStreet']) || isset($_POST['deletePoly'])) {
     deleteMarkup($conn);
+}
+
+function streetLengthCheck(array $streets): array
+{
+    $uniqueNames = [];
+    $totalLengths = [];
+
+    for ($i = 0; $i < count($streets); $i++) {
+        if (!key_exists($streets[$i]['name'], $uniqueNames)) {
+            $uniqueNames[(string)$streets[$i]['name']] = 1;
+        } else {
+            $uniqueNames[(string)$streets[$i]['name']]++;
+        }
+    }
+    for ($j = 0; $j < count($streets); $j++) {
+        if (!key_exists((string)$streets[$j]['name'], $totalLengths)) {
+            $totalLengths[(string)$streets[$j]['name']] = $streets[$j]['length'];
+        } else {
+            $totalLengths[(string)$streets[$j]['name']] += $streets[$j]['length'];
+        }
+    }
+    for ($k = 0; $k < count($streets); $k++) {
+        $streets[$k]['totalLength'] = $totalLengths[(string)$streets[$k]['name']];
+    }
+    return $streets;
 }
 
 //add Label
@@ -519,7 +544,7 @@ function countLabels($elements)
                     <?php for ($i = 0; $i < count($streets); $i++): echo "<tr>" ?>
                         <td><?php echo htmlspecialchars($streets[$i]['name']) ?></td>
                         <td><?php echo htmlspecialchars($streets[$i]['color']) ?></td>
-                        <td><?php echo htmlspecialchars(round($streets[$i]['length']), 2) ?>m</td>
+                        <td><?php echo htmlspecialchars(round($streets[$i]['length']), 2) ?>m <?php if ($streets[$i]['totalLength'] > $streets[$i]['length']) echo "(" . round($streets[$i]['totalLength']) . "m)" ?></td>
                         <td><?php echo htmlspecialchars($streets[$i]['id']) ?></td>
                         <td>
                             <form action="<?php $_SERVER['PHP_SELF'] ?>" method="post" id="deleteForm">

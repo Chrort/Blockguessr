@@ -29,7 +29,7 @@ export class Map{
     this.zoom = this.zoom.bind(this);
 
     this.mapDiv.addEventListener("pointerdown", this.mouseDown);
-    this.mapDiv.addEventListener("wheel", this.zoom, {passive: false});
+    this.mapDiv.addEventListener("wheel", this.zoom, {passive: true});
   }
 
   genMap(type, imgPath = "../"){
@@ -106,101 +106,104 @@ export class Map{
   }
 
   drawLabels(create){
-      for(var i = 0; i < this.labelDataArray.length; i++){
-            let center = "-50%";
-      
-            //creates div only once
-            if(create){
-              let labelDiv = document.createElement("div");
-              labelDiv.className = `labelDiv labelDiv_${this.labelDataArray[i][4]}`;
-              labelDiv.id = `mapLabel_${+this.labelDataArray[i][0]}_${this.labelDataArray[i][4]}`;
-              this.mapDiv.appendChild(labelDiv);
-            }
-      
-            //positions divs and sets font-size
-            let labelDiv = document.getElementById(`mapLabel_${+this.labelDataArray[i][0]}_${this.labelDataArray[i][4]}`);
-            labelDiv.style.left = `${+this.labelDataArray[i][2] + this.xTransform}px`;
-            labelDiv.style.top = `${+this.labelDataArray[i][3] + this.yTransform}px`;
-            labelDiv.style.fontSize = `${20 / this.currentZoomLevel**.7}px`;
-      
-            //styles/displays different types differently
-            switch(this.labelDataArray[i][4]){
-              case "province":
-                if(this.currentZoomLevel <= .35){
-                  labelDiv.style.visibility = "visible";
-                  labelDiv.style.color = "black";
-                  labelDiv.style.fontWeight = "bolder";
-                  labelDiv.style.fontSize = `${25 / this.currentZoomLevel**.7}px`;
-                  labelDiv.innerHTML = `${this.labelDataArray[i][1].toUpperCase()}`;
-                }else{
-                  labelDiv.style.visibility = "hidden";
-                }
-                break;
-              case "town":
-                if(this.currentZoomLevel > .2){
-                  labelDiv.style.visibility = "visible";
-                  labelDiv.style.color = "black";
-                  labelDiv.innerHTML = `${this.labelDataArray[i][1]}`;
-                }else{
-                  labelDiv.style.visibility = "hidden";
-                }
-                break;
-              case "waters":
-                if(this.currentZoomLevel > .3){
-                  labelDiv.style.visibility = "visible";
-                  labelDiv.style.color = "blue";
-                  labelDiv.innerHTML = `${this.labelDataArray[i][1]}`;
-                }
-                else{
-                  labelDiv.style.visibility = "hidden";
-                }
-                break;
-              case "landscape":
-                if(this.currentZoomLevel > .4){
-                  labelDiv.style.visibility = "visible";
-                  labelDiv.style.color = "green";
-                  labelDiv.innerHTML = `${this.labelDataArray[i][1]}`;
-                }
-                else{
-                  labelDiv.style.visibility = "hidden";
-                }
-                break;
-              case "point":
-                if(this.currentZoomLevel > .6){
-                  labelDiv.style.visibility = "visible";
-                  labelDiv.style.color = "black";
-                  center = "0%";
-                  labelDiv.innerHTML = `▪${this.labelDataArray[i][1]}`;
-                }
-                else{
-                  labelDiv.style.visibility = "hidden";
-                }
-                break;
-              case "np":
-                if(this.currentZoomLevel > .2){
-                  labelDiv.style.visibility = "visible";
-                  labelDiv.style.color = "#CBBA9F";
-                  labelDiv.innerHTML = `${this.labelDataArray[i][1]}`;
-                  labelDiv.innerHTML = `${this.labelDataArray[i][1].toUpperCase()}`;
-                }
-                else{
-                  labelDiv.style.visibility = "hidden";
-                }
-                break;
-              default:
-            }
-            //adjust postion
-            labelDiv.style.transform = `translateX(${center}) translateY(-${parseFloat(window.getComputedStyle(labelDiv).getPropertyValue('font-size')) / 2}px)`;
-        }
-        if(this.currentZoomLevel < 10) this.checkCollision();
+    for(var i = 0; i < this.labelDataArray.length; i++){
+      let center = "-50%";
+
+      //creates div only once
+      if(create){
+        let labelDiv = document.createElement("div");
+        labelDiv.className = `labelDiv labelDiv_${this.labelDataArray[i][4]}`;
+        labelDiv.id = `mapLabel_${+this.labelDataArray[i][0]}_${this.labelDataArray[i][4]}`;
+        this.mapDiv.appendChild(labelDiv);
+      }
+
+      //positions divs and sets font-size
+      let labelDiv = document.getElementById(`mapLabel_${+this.labelDataArray[i][0]}_${this.labelDataArray[i][4]}`);
+      labelDiv.style.left = `${+this.labelDataArray[i][2] + this.xTransform}px`;
+      labelDiv.style.top = `${+this.labelDataArray[i][3] + this.yTransform}px`;
+      labelDiv.style.fontSize = `${20 / this.currentZoomLevel**.7}px`;
+
+      //styles/displays different types differently
+      switch(this.labelDataArray[i][4]){
+        case "province":
+          if(this.currentZoomLevel <= .35){
+            labelDiv.style.visibility = "visible";
+            labelDiv.style.color = "black";
+            labelDiv.style.fontWeight = "bolder";
+            labelDiv.style.fontSize = `${25 / this.currentZoomLevel**.7}px`;
+            labelDiv.innerHTML = `${this.labelDataArray[i][1].toUpperCase()}`;
+          }else{
+            labelDiv.style.visibility = "hidden";
+          }
+          break;
+        case "town":
+          if(this.currentZoomLevel > .2){
+            labelDiv.style.visibility = "visible";
+            labelDiv.style.color = "black";
+            labelDiv.innerHTML = `${this.labelDataArray[i][1]}`;
+          }else{
+            labelDiv.style.visibility = "hidden";
+          }
+          break;
+        case "waters":
+          if(this.currentZoomLevel > .3){
+            labelDiv.style.visibility = "visible";
+            labelDiv.style.color = "blue";
+            labelDiv.innerHTML = `${this.labelDataArray[i][1]}`;
+          }
+          else{
+            labelDiv.style.visibility = "hidden";
+          }
+          break;
+        case "landscape":
+          if(this.currentZoomLevel > .4){
+            labelDiv.style.visibility = "visible";
+            labelDiv.style.color = "green";
+            labelDiv.innerHTML = `${this.labelDataArray[i][1]}`;
+          }
+          else{
+            labelDiv.style.visibility = "hidden";
+          }
+          break;
+        case "point":
+          if(this.currentZoomLevel > .6){
+            labelDiv.style.visibility = "visible";
+            labelDiv.style.color = "black";
+            center = "0%";
+            labelDiv.innerHTML = `▪${this.labelDataArray[i][1]}`;
+          }
+          else{
+            labelDiv.style.visibility = "hidden";
+          }
+          break;
+        case "np":
+          if(this.currentZoomLevel > .2){
+            labelDiv.style.visibility = "visible";
+            labelDiv.style.color = "#CBBA9F";
+            labelDiv.innerHTML = `${this.labelDataArray[i][1]}`;
+            labelDiv.innerHTML = `${this.labelDataArray[i][1].toUpperCase()}`;
+          }
+          else{
+            labelDiv.style.visibility = "hidden";
+          }
+          break;
+        default:
+      }
+      //adjust postion
+      labelDiv.style.transform = `translateX(${center}) translateY(-${parseFloat(window.getComputedStyle(labelDiv).getPropertyValue('font-size')) / 2}px)`;
+    }
+    if(this.currentZoomLevel < 10) this.checkCollision();
   }
 
   drawStreetLabels(create){
     let frequency = 150;
     
     for(let i = 0; i < this.streetDataArray.length; i++){
+      const container = document.getElementById("streetLabelDivContainer");
+      const streetCheckbox = document.getElementById("street");
+      let coordsLength = this.streetDataArray[i][3].split(" ").length;
       if(create){
-        for(let j = 0; j < this.streetDataArray[i][3].split(" ").length; j+=frequency){
+        for(let j = 0; j < coordsLength; j+=frequency){
           let streetLabelDiv = document.createElement("div");
           streetLabelDiv.classList.add(`${this.streetDataArray[i][1]}_label`, 'streetLabel');
           streetLabelDiv.id = `${this.streetDataArray[i][1]}_${this.streetDataArray[i][0]}_label_${j}`;  
@@ -213,7 +216,7 @@ export class Map{
           let yCoord;
   
           //checks for too short roads
-          if(this.streetDataArray[i][3].split(" ").length > frequency){
+          if(coordsLength > frequency){
             try{
               xCoord = +coords[j + Math.round(frequency / 2)].split(",")[0];
               yCoord = +coords[j + Math.round(frequency / 2)].split(",")[1];
@@ -221,23 +224,25 @@ export class Map{
               null;
             }
           }else{
-            xCoord = +coords[Math.round(this.streetDataArray[i][3].split(" ").length / 2)].split(",")[0];
-            yCoord = +coords[Math.round(this.streetDataArray[i][3].split(" ").length / 2)].split(",")[1];
+            xCoord = +coords[Math.round(coordsLength / 2)].split(",")[0];
+            yCoord = +coords[Math.round(coordsLength / 2)].split(",")[1];
           }
           streetLabelDiv.style.top = `${yCoord + this.yTransform}px`;
           streetLabelDiv.style.left = `${xCoord + this.xTransform}px`;
   
-          document.getElementById("streetLabelDivContainer").appendChild(streetLabelDiv);
+          container.appendChild(streetLabelDiv);
         }
       }
-  
-      for(let k = 0; k < this.streetDataArray[i][3].split(" ").length; k+=frequency){
+
+      for(let k = 0; k < coordsLength; k+=frequency){
         let streetLabelDiv = document.getElementById(`${this.streetDataArray[i][1]}_${this.streetDataArray[i][0]}_label_${k}`);
   
-        this.currentZoomLevel < 1.4 || (!document.getElementById("street")?.checked && document.getElementById("street") != undefined) ? streetLabelDiv.style.display = "none" : streetLabelDiv.style.display = "flex";
+        this.currentZoomLevel < 1.4 || (!streetCheckbox?.checked && streetCheckbox != undefined) ? streetLabelDiv.style.display = "none" : streetLabelDiv.style.display = "flex";
   
-        streetLabelDiv.style.fontSize = `${14 / this.currentZoomLevel**.7}px`;
-        streetLabelDiv.style.padding = `0 ${2 / this.currentZoomLevel**.7}px`;
+        if(streetLabelDiv.style.display !== "none"){
+          streetLabelDiv.style.fontSize = `${14 / this.currentZoomLevel**.7}px`;
+          streetLabelDiv.style.padding = `0 ${2 / this.currentZoomLevel**.7}px`;
+        }
       }
     }
   }
@@ -250,22 +255,13 @@ export class Map{
   }
 
   mouseDown(e){
-    this.startX = e.clientX;
-    this.startY = e.clientY;
-    
     this.mapDiv.addEventListener("pointermove", this.mouseMove);
     this.mapDiv.addEventListener("pointerup", this.mouseUp);
   }
 
   mouseMove(e){
-    this.newX = this.startX - e.clientX;
-    this.newY = this.startY - e.clientY;
-
-    this.startX = e.clientX;
-    this.startY = e.clientY;
-
-    this.mapDiv.style.top = `${this.mapDiv.offsetTop - this.newY}px`;
-    this.mapDiv.style.left = `${this.mapDiv.offsetLeft - this.newX}px`;
+    this.mapDiv.style.top = `${this.mapDiv.offsetTop - e.movementY * -1}px`;
+    this.mapDiv.style.left = `${this.mapDiv.offsetLeft - e.movementX * -1}px`;
   }
 
   mouseUp(){
@@ -287,15 +283,6 @@ export class Map{
     this.currentZoomLevel = Math.round(this.currentZoomLevel * 100) / 100;
     this.mapDiv.style.scale = this.currentZoomLevel;
   
-    this.drawLabels(false);
-    this.drawStreetLabels(false);
-    this.adaptBorders();
-    this.adaptStreets();
-    this.adaptPanoLinks();
-    this.adaptPolygonsText();
-    this.adaptIdLine();
-    this.adjustPins();
-  
     //mouse pos after scale
     let mouseX2 = this.getMousePos(e).x;
     let mouseY2 = this.getMousePos(e).y;
@@ -306,16 +293,33 @@ export class Map{
     //arrays stores current scale data ([x, y])
     this.transformData.push(mouseX2 - mouseX + this.transformData[0], mouseY2 - mouseY + this.transformData[1]);
     this.transformData.splice(0, 2);
+
+    this.drawStreetLabels(false);
+    this.drawLabels(false);
+    this.adaptBorders();
+    this.adaptStreets();
+    this.adaptPanoLinks();
+    this.adaptPolygonsText();
+    this.adaptIdLine();
+    this.adjustPins();
   }
 
   checkCollision(){
     const boxes = [];
 
-    for (let i = 0; i < this.labelDataArray.length; i++) {
+    for(let i = 0; i < this.labelDataArray.length; i++){
         const div = document.getElementById(`mapLabel_${+this.labelDataArray[i][0]}_${this.labelDataArray[i][4]}`);
 
-        boxes.push([div, div.getBoundingClientRect()]);
+        if(!div.checkVisibility()) continue;
+
+        boxes.push([div, div.getBoundingClientRect(), this.labelDataArray[i][4]]);
     }
+
+    [].forEach.call(document.querySelectorAll('.streetLabel'), e => {
+      if(e.checkVisibility()){
+        boxes.push([e, e.getBoundingClientRect(), "street"]);
+      }
+    })
 
     for(let i = 0; i < boxes.length; i++){
       for(let j = i + 1; j < boxes.length; j++){
@@ -325,41 +329,23 @@ export class Map{
         const compareSize = boxes[j][1];
         
         if(size.top < compareSize.bottom && size.bottom > compareSize.top && size.left < compareSize.right && size.right > compareSize.left){
-          this.deleteDecider(i, j, boxes[i][0], boxes[j][0]).innerHTML = ``;
+          this.deleteDecider(boxes[i][0], boxes[j][0], boxes[i][2], boxes[j][2]).innerHTML = ``;
         }
       }
     }
   }
 
-  deleteDecider(i, j, div, compareDiv){
-    switch(this.labelDataArray[i][4]){
-      case "province":
-        return compareDiv;
-      case "town":
-        if(this.labelDataArray[j][4] == "province"){
-          return div;
-        }else{
-          return compareDiv;
-        }
-      case "waters":
-        if(this.labelDataArray[j][4] == "province" || this.labelDataArray[j][4] == "town"){
-          return div;
-        }
-        else{
-          return compareDiv;
-        }
-      case "landscape":
-        if(this.labelDataArray[j][4] == "province" || this.labelDataArray[j][4] == "town" || this.labelDataArray[j][4] == "waters"){
-          return div;
-        }
-        else{
-          return compareDiv;
-        }
-      case "point":
-        return div;
-      default:
-        return div;
+  deleteDecider(div, compareDiv, typeI, typeJ){
+    const priority = {
+      province: 5,
+      town: 4,
+      waters: 3,
+      landscape: 2,
+      point: 1,
+      street: 0
     }
+
+    return priority[typeI] >= priority[typeJ] ? compareDiv : div;
   }
 
   adaptBorders(){
@@ -371,10 +357,7 @@ export class Map{
 
   adaptPanoLinks(){
     if(document.getElementById("panorama").checked){
-      const panos = document.getElementsByClassName("panoLink");
-      [].forEach.call(panos, (e) => {
-        e.style.transform = `translate(-5px, -5px) scale(${1 / this.currentZoomLevel ** .5})`;
-      })
+      document.documentElement.style.setProperty("--panoScale", 1 / (this.currentZoomLevel ** 0.5));
     }
   }
 
