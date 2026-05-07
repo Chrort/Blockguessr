@@ -192,7 +192,7 @@ export class Map{
       //adjust postion
       labelDiv.style.transform = `translateX(${center}) translateY(-${parseFloat(window.getComputedStyle(labelDiv).getPropertyValue('font-size')) / 2}px)`;
     }
-    if(this.currentZoomLevel < 10) this.checkCollision();
+    if(this.currentZoomLevel < 11) this.checkCollision();
   }
 
   drawStreetLabels(create){
@@ -236,10 +236,10 @@ export class Map{
 
       for(let k = 0; k < coordsLength; k+=frequency){
         let streetLabelDiv = document.getElementById(`${this.streetDataArray[i][1]}_${this.streetDataArray[i][0]}_label_${k}`);
-  
         this.currentZoomLevel < 1.4 || (!streetCheckbox?.checked && streetCheckbox != undefined) ? streetLabelDiv.style.display = "none" : streetLabelDiv.style.display = "flex";
   
         if(streetLabelDiv.style.display !== "none"){
+          streetLabelDiv.innerHTML = this.streetDataArray[i][1];
           streetLabelDiv.style.fontSize = `${14 / this.currentZoomLevel**.7}px`;
           streetLabelDiv.style.padding = `0 ${2 / this.currentZoomLevel**.7}px`;
         }
@@ -305,25 +305,25 @@ export class Map{
   }
 
   checkCollision(){
+
     const boxes = [];
 
     for(let i = 0; i < this.labelDataArray.length; i++){
         const div = document.getElementById(`mapLabel_${+this.labelDataArray[i][0]}_${this.labelDataArray[i][4]}`);
 
-        if(!div.checkVisibility()) continue;
-
-        boxes.push([div, div.getBoundingClientRect(), this.labelDataArray[i][4]]);
+        if(window.getComputedStyle(div).visibility == "visible") boxes.push([div, div.getBoundingClientRect(), this.labelDataArray[i][4]]);
     }
 
     [].forEach.call(document.querySelectorAll('.streetLabel'), e => {
-      if(e.checkVisibility()){
-        boxes.push([e, e.getBoundingClientRect(), "street"]);
-      }
+      if(window.getComputedStyle(e).display == "flex") boxes.push([e, e.getBoundingClientRect(), "street"]);
     })
 
+    let c = 0;
     for(let i = 0; i < boxes.length; i++){
       for(let j = i + 1; j < boxes.length; j++){
-        if(Math.abs(boxes[i][1].top - boxes[j][1].top) > 300) continue;
+        if(Math.abs(boxes[i][1].top - boxes[j][1].top) > 70){
+          continue;
+        }
 
         const size = boxes[i][1];
         const compareSize = boxes[j][1];

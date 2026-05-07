@@ -248,6 +248,7 @@ const btnAction = () => {
       localStorage.setItem("timePlayed", timePlayed / 10);
       localStorage.setItem("totalP", totalPoints);
       localStorage.setItem("roundData", JSON.stringify(roundData));
+      localStorage.setItem("savedCurrentGame", "false");
       window.location.href = "./summary.php";
     }else if(!locScreen && currentRound < 4){
       nextRound();

@@ -10,17 +10,21 @@ let roundData = JSON.parse(localStorage.getItem("roundData"));
 let totalPoints = +localStorage.getItem("totalP");
 let timePlayed = +localStorage.getItem("timePlayed");
 let averageDistance = 0;
+let savedCurrentGame = localStorage.getItem("savedCurrentGame");
 
 window.onload = async () => {
     displaySummary();
 
-    await fetch("./save_game_data.php", {
-        method: "POST",
-        headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: `totalPoints=${encodeURIComponent(totalPoints)}&timePlayed=${encodeURIComponent(timePlayed)}`
-    });
+    if(savedCurrentGame === "false"){
+        await fetch("./save_game_data.php", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `totalPoints=${encodeURIComponent(totalPoints)}&timePlayed=${encodeURIComponent(timePlayed)}`
+        });
+        localStorage.setItem("savedCurrentGame", "true");
+    }
 }
 
 const displaySummary = () => {
