@@ -1,6 +1,6 @@
 <?php
 
-function usernameTaken($username, $conn)
+function usernameTaken(string $username, mysqli $conn)
 {
     $sql = "SELECT * FROM users WHERE name LIKE '$username'";
     $result =  mysqli_query($conn, $sql);
@@ -10,7 +10,7 @@ function usernameTaken($username, $conn)
     return $return;
 }
 
-function emailTaken($email, $conn)
+function emailTaken(string $email, mysqli $conn)
 {
     $sql = "SELECT * FROM users WHERE email LIKE '$email'";
     $result =  mysqli_query($conn, $sql);
@@ -20,7 +20,7 @@ function emailTaken($email, $conn)
     return $return;
 }
 
-function getUserId($conn, $username)
+function getUserId(mysqli $conn, string $username)
 {
     $sql = "SELECT id FROM users WHERE name = '$username'";
     $result =  mysqli_query($conn, $sql);

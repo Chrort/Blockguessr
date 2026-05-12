@@ -52,8 +52,6 @@ function getStreets(mysqli $conn, string $sort = "name", string $order = "ASC"):
         $length *= 0.96;
 
         $streets[$i]['length'] = $length;
-
-        
     }
 
     if ($osort == "length") $order == "ASC" ? array_multisort(array_column($streets, 'length'), SORT_ASC, $streets) : array_multisort(array_column($streets, 'length'), SORT_DESC, $streets);

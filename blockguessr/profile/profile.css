@@ -25,10 +25,68 @@ main{
 
 button{
     cursor: pointer;
-    padding: 10px;
-    background-color: rgb(225, 52, 52);
-    border: none;
+    padding: 5px;
+    border: 2px solid rgb(194, 1, 1);
     outline: none;
-    box-shadow: 0 0 5px;
+    box-shadow: 0 0 2px;
     border-radius: 10px;
+    background-color: rgba(128, 128, 128, 0.2);
+    font-size: 1.1rem;
+}
+
+button:hover{
+    background-color: rgba(128, 128, 128, 0.5);
+}
+
+h1, section, #user-log{
+    width: 50%;
+    padding: 20px;
+    box-shadow: 0 0 5px black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 1.4rem;
+    border-radius: 20px;
+}
+
+.info-div{
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.info-div:last-of-type{
+    margin-bottom: 0;
+}
+
+.info-bottom{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 5px;
+}
+
+h1{
+    font-size: 2em !important;
+}
+
+.change-form{
+    padding-top: 5px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.change-form > div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.change-form input[type=email], .change-form input[type=text]{
+    border: none;
+    background-color: transparent;
+    font-size: 1.2rem;
 }
