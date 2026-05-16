@@ -1,1 +1,1 @@
-GeoGuessr, Map and Archive implementation for a MC-Server --> chrort.de
+GeoGuessr, Map and Archive implementation for a MC-Server --> chrort.de/serverMap/
