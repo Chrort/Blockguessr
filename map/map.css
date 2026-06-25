@@ -30,7 +30,8 @@ header{
     align-items: center;
     font-weight: bold;
     z-index: 5;
-    background-color: rgba(240, 248, 255, 1);
+    background: #fafafa;
+    background: linear-gradient(104deg,#fafafa 0%, #a4d5e0 100%);
 }
 
 body{
@@ -62,8 +63,8 @@ section{
     align-items: start;
     flex-direction: column;
     gap: 1%;
-    margin: 2%;
-    padding: 2%;
+    margin: 2px;
+    padding: 5px;
 }
 
 .borderSvg{
@@ -94,6 +95,55 @@ section{
     border: 1px solid black;
 }
 
+.hideNavbar{
+    transform: translateY(-6vh);
+}
+
+#navigationBar{
+    border-top: 1px solid;
+    z-index: 5;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 6vh;
+    width: 100%;
+    box-shadow: 0 0 5px 5px black;
+    background: #fafafa;
+    background: linear-gradient(104deg,#fafafa 0%, #a4d5e0 100%);
+    transition: transform .5s ease;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+    padding-left: 20px;
+    font-size: 3vh;
+}
+
+#navigationBar > input, #navigateBtn, #errorLog{
+    background-color: transparent;
+    height: 4vh;
+    border-radius: 10px;
+    font-size: 2vh;
+    border: 2px inset black;
+}
+
+#navigateBtn, #errorLog{
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color .75s;
+}
+
+#navigateBtn:hover{
+    background-color: rgb(0, 172, 0);
+}
+
+#errorLog{
+    display: none;
+}
+
 #menu{
     display: flex;
     justify-content: center;
@@ -111,7 +161,7 @@ section{
 }
 
 #settingsContainer{
-    border-top: 1px solid black;
+    border-top: 1px solid;
     z-index: 10;
     position: absolute;
     top: 0;
@@ -123,22 +173,47 @@ section{
     width: clamp(200px, 100%, 250px);
     transform: translateX(100%);
     transition: transform 0.75s ease;
-    background-color: rgba(240, 248, 255, .6);
+    background: #FAFAFA;
+    background: linear-gradient(104deg,rgba(250, 250, 250, 1) 0%, rgba(180, 220, 229, 1) 0%, rgba(164, 213, 224, 1) 100%);
     padding: 10px;
     gap: 5px;
     font-size: 1.3em;
 }
 
-#settingsContainer > div{
-    cursor: pointer;
+hr{
+    width: 100%;
+    border-bottom: transparent;
+    border-color: black;
+}
+
+#settingsContainer > section{
+    width: 100%;
+}
+
+#heading{
+    font-size: 1.4rem;
+    max-height: 5%;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
 }
 
 #checkboxes{
     max-height: 50%;
+    padding: 15px;
 }
 
 #tools{
     max-height: 15%;
+}
+
+.toolIcon{
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2px;
+    gap: 5px;
 }
 
 #form{
@@ -154,7 +229,7 @@ section{
 }
 
 section#form{
-    width: 80%;
+    width: 100%;
 }
 
 #pwdForm{
@@ -215,21 +290,25 @@ section#form{
 }
 
 #mapTypes{
-    display: grid;
-    width: 70%;
+    display: flex;
     max-height: 20%;
-    aspect-ratio: 1 / 1;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-columns: repeat(2, 1fr);
-    justify-items: center;
+    justify-content: space-between;
     align-items: center;
+    flex-direction: row;
+    gap: 0;
 }
 
 
 #mapTypes > img{
+    cursor: pointer;
     border-radius: 10px;
-    height: 3em;
-    width: 3em;
+    aspect-ratio: 1 / 1;
+    width: 25%;
+    transform: scale(0.9);
+}
+
+#mapTypes > img:hover{
+    border: 2px solid transparent;
 }
 
 .pointLabels{

@@ -26,6 +26,7 @@ $borders = getBorders($conn);
 $panoramas = getPanoData($conn);
 $streets = getStreets($conn);
 $polygons = getPolygons($conn);
+$labels = getLabels($conn);
 
 ?>
 
@@ -48,11 +49,31 @@ $polygons = getPolygons($conn);
                 <path d="M400-240 160-480l240-240 56 58-142 142h486v80H314l142 142-56 58Z" />
             </svg>
         </a>BlockGuessr
-        <svg id="menu" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#000000" style="position: absolute">
-            <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
+        <svg id="menu" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#000000" style="position: absolute;">
+            <path d="M160-240q-17 0-28.5-11.5T120-280q0-17 11.5-28.5T160-320h640q17 0 28.5 11.5T840-280q0 17-11.5 28.5T800-240H160Zm0-200q-17 0-28.5-11.5T120-480q0-17 11.5-28.5T160-520h640q17 0 28.5 11.5T840-480q0 17-11.5 28.5T800-440H160Zm0-200q-17 0-28.5-11.5T120-680q0-17 11.5-28.5T160-720h640q17 0 28.5 11.5T840-680q0 17-11.5 28.5T800-640H160Z" />
         </svg>
     </header>
     <main>
+        <div id="navigationBar" class="hideNavbar">
+            <svg xmlns="http://www.w3.org/2000/svg" height="4vh" viewBox="0 -960 960 960" width="4vh" fill="#000000">
+                <path d="m319-280 161-73 161 73 15-15-176-425-176 425 15 15ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
+            </svg>
+            <label for="start">From: </label>
+            <input list="labels" type="text" name="start" id="start" placeholder="Al-Sahrawia">
+            <label for="destination">To: </label>
+            <input list="labels" type="text" name="destination" id="destination" placeholder="1093,-664">
+            <button id="navigateBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" height="3vh" viewBox="0 -960 960 960" width="3vh" fill="#000000">
+                    <path d="M320-360h80v-120h140v100l140-140-140-140v100H360q-17 0-28.5 11.5T320-520v160ZM480-80q-15 0-29.5-6T424-104L104-424q-12-12-18-26.5T80-480q0-15 6-29.5t18-26.5l320-320q12-12 26.5-18t29.5-6q15 0 29.5 6t26.5 18l320 320q12 12 18 26.5t6 29.5q0 15-6 29.5T856-424L536-104q-12 12-26.5 18T480-80ZM320-320l160 160 320-320-320-320-320 320 160 160Zm160-160Z" />
+                </svg>Navigate
+            </button>
+            <div id="errorLog" style="color: red; cursor: default !important"></div>
+            <datalist id="labels">
+                <?php for ($i = 0; $i < count($labels); $i++): ?>
+                    <option value="<?= $labels[$i]['name'] ?>"></option>
+                <?php endfor; ?>
+            </datalist>
+        </div>
         <div id="map">
             <canvas id="measureCanvas" width="5120" height="5120"></canvas>
             <div class="cleanBorder" id="cB1"></div>
@@ -105,8 +126,8 @@ $polygons = getPolygons($conn);
                     $pairs = explode((" "), $streets[$i]['coords']);
                     $transformedPairs = [];
 
-                    foreach ($pairs as $pair) {
-                        list($x, $y) = explode(",", $pair);
+                    for ($j = 0; $j < count($pairs); $j += 4) {
+                        list($x, $y) = explode(",", $pairs[$j]);
 
                         $x = (int)$x + 6 * 512;
                         $y = (int)$y + 6 * 512;
@@ -150,6 +171,13 @@ $polygons = getPolygons($conn);
             </svg>
         </div>
         <div id="settingsContainer">
+            <section id="heading">
+                <svg xmlns="http://www.w3.org/2000/svg" height="1.6rem" viewBox="0 -960 960 960" width="1.6rem" fill="#000000">
+                    <path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z" />
+                </svg>
+                Settings (s)
+            </section>
+            <hr>
             <section id="checkboxes">
                 <div>
                     <input type="checkbox" name="showLabel" id="province" value="provinces" class="inputCheckbox" checked>
@@ -206,15 +234,22 @@ $polygons = getPolygons($conn);
             <hr>
             <section id="tools">
                 <div>
-                    <div class="labelCheckbox" id="measureDistance">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="1.1em" viewBox="0 -960 960 960" width="1.1em" fill="#0000F5">
+                    <div class="labelCheckbox toolIcon" id="navigation">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="1.1em" viewBox="0 -960 960 960" width="1.1em" fill="#000000">
+                            <path d="m200-120-40-40 320-720 320 720-40 40-280-120-280 120Zm84-124 196-84 196 84-196-440-196 440Zm196-84Z" />
+                        </svg>Navigation (n)
+                    </div>
+                </div>
+                <div>
+                    <div class="labelCheckbox toolIcon" id="measureDistance">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="1.1em" viewBox="0 -960 960 960" width="1.1em" fill="#000000">
                             <path d="M120-240q-33 0-56.5-23.5T40-320q0-33 23.5-56.5T120-400h10.5q4.5 0 9.5 2l182-182q-2-5-2-9.5V-600q0-33 23.5-56.5T400-680q33 0 56.5 23.5T480-600q0 2-2 20l102 102q5-2 9.5-2h21q4.5 0 9.5 2l142-142q-2-5-2-9.5V-640q0-33 23.5-56.5T840-720q33 0 56.5 23.5T920-640q0 33-23.5 56.5T840-560h-10.5q-4.5 0-9.5-2L678-420q2 5 2 9.5v10.5q0 33-23.5 56.5T600-320q-33 0-56.5-23.5T520-400v-10.5q0-4.5 2-9.5L420-522q-5 2-9.5 2H400q-2 0-20-2L198-340q2 5 2 9.5v10.5q0 33-23.5 56.5T120-240Z" />
                         </svg>Measure Distance
                     </div>
                 </div>
                 <div>
-                    <div class="labelCheckbox" id="measureArea">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="1.1em" viewBox="0 -960 960 960" width="1.1em" fill="#0000F5">
+                    <div class="labelCheckbox toolIcon" id="measureArea">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="1.1em" viewBox="0 -960 960 960" width="1.1em" fill="#000000">
                             <path d="M200-80q-50 0-85-35t-35-85q0-39 22.5-69.5T160-313v-334q-35-13-57.5-43.5T80-760q0-50 35-85t85-35q39 0 69.5 22.5T313-800h334q12-35 42.5-57.5T760-880q50 0 85 35t35 85q0 40-22.5 70.5T800-647v334q35 13 57.5 43.5T880-200q0 50-35 85t-85 35q-39 0-69.5-22.5T647-160H313q-13 35-43.5 57.5T200-80Zm0-640q17 0 28.5-11.5T240-760q0-17-11.5-28.5T200-800q-17 0-28.5 11.5T160-760q0 17 11.5 28.5T200-720Zm560 0q17 0 28.5-11.5T800-760q0-17-11.5-28.5T760-800q-17 0-28.5 11.5T720-760q0 17 11.5 28.5T760-720ZM313-240h334q9-26 28-45t45-28v-334q-26-9-45-28t-28-45H313q-9 26-28 45t-45 28v334q26 9 45 28t28 45Zm447 80q17 0 28.5-11.5T800-200q0-17-11.5-28.5T760-240q-17 0-28.5 11.5T720-200q0 17 11.5 28.5T760-160Zm-560 0q17 0 28.5-11.5T240-200q0-17-11.5-28.5T200-240q-17 0-28.5 11.5T160-200q0 17 11.5 28.5T200-160Zm0-600Zm560 0Zm0 560Zm-560 0Z" />
                         </svg>Measure Area
                     </div>
@@ -247,5 +282,6 @@ $polygons = getPolygons($conn);
     </main>
 </body>
 <script src="map.js" type="module"></script>
+<script src="navigation.js" type="module"></script>
 
 </html>

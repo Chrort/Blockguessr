@@ -5,6 +5,8 @@ const menu = document.getElementById("menu");
 const settingsContainer = document.getElementById("settingsContainer");
 const incorrectPwd = document.getElementById("wrongPwd").content;
 const pwdInput = document.getElementById("pwd");
+const startInput = document.querySelector("#start"); 
+const destinationInput = document.querySelector("#destination"); 
 
 let currentState = 0;
 
@@ -13,7 +15,7 @@ export const setupListener = () => {
     //opening/closing
     menu.addEventListener("click", settingsAnimation);
     document.addEventListener("keydown", e => {
-        if(e.key == "s") settingsAnimation();
+        if(e.key == "s" && document.activeElement !== startInput && document.activeElement !== destinationInput) settingsAnimation();
     });
     //setup checkboxes
     for(const checkbox of checkboxes){
