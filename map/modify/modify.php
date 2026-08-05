@@ -16,9 +16,11 @@ $order == "ASC" ? $order = "DESC" : $order = "ASC";
 
 //acces files
 
+/** @var mysqli $conn */
 require_once '../../config/db_connect.php';
 require_once '../../config/map_queries.php';
 require_once './completeStreet.php';
+require_once './convert.php';
 
 //declare variables
 
@@ -91,20 +93,20 @@ function streetLengthCheck(array $streets): array
 
     for ($i = 0; $i < count($streets); $i++) {
         if (!key_exists($streets[$i]['name'], $uniqueNames)) {
-            $uniqueNames[(string)$streets[$i]['name']] = 1;
+            $uniqueNames[(string) $streets[$i]['name']] = 1;
         } else {
-            $uniqueNames[(string)$streets[$i]['name']]++;
+            $uniqueNames[(string) $streets[$i]['name']]++;
         }
     }
     for ($j = 0; $j < count($streets); $j++) {
-        if (!key_exists((string)$streets[$j]['name'], $totalLengths)) {
-            $totalLengths[(string)$streets[$j]['name']] = $streets[$j]['length'];
+        if (!key_exists((string) $streets[$j]['name'], $totalLengths)) {
+            $totalLengths[(string) $streets[$j]['name']] = $streets[$j]['length'];
         } else {
-            $totalLengths[(string)$streets[$j]['name']] += $streets[$j]['length'];
+            $totalLengths[(string) $streets[$j]['name']] += $streets[$j]['length'];
         }
     }
     for ($k = 0; $k < count($streets); $k++) {
-        $streets[$k]['totalLength'] = $totalLengths[(string)$streets[$k]['name']];
+        $streets[$k]['totalLength'] = $totalLengths[(string) $streets[$k]['name']];
     }
     return $streets;
 }
@@ -112,8 +114,8 @@ function streetLengthCheck(array $streets): array
 //add Label
 function addLabel($conn)
 {
-    $errors = array('nameLabel' => '', 'x' => '', 'y' => '', 'type' => '');
-    $labels = array('nameLabel' => '', 'x' => '', 'y' => '', 'type' => '');
+    $errors = ['nameLabel' => '', 'x' => '', 'y' => '', 'type' => ''];
+    $labels = ['nameLabel' => '', 'x' => '', 'y' => '', 'type' => ''];
 
     if (empty($_POST['nameLabel'])) {
         $errors['nameLabel'] = 'Enter a name';
@@ -193,7 +195,7 @@ function addStreet($conn)
     $streets = [
         'nameStreet' => '',
         'coordsStreet' => '',
-        'colorStreet' => isset($_POST['colorStreet']) ? $_POST['colorStreet'] : '#000000'
+        'colorStreet' => isset($_POST['colorStreet']) ? $_POST['colorStreet'] : '#000000',
     ];
 
     if (empty($_POST['nameStreet'])) {
@@ -220,6 +222,7 @@ function addStreet($conn)
 
         $sql = "INSERT INTO mapstreets(name, color, coords) VALUES ('{$streets['nameStreet']}', '{$streets['colorStreet']}', '{$streets['coordsStreet']}')";
         modifyData($conn, $sql);
+        write($streets);
     }
 
     return ['errors' => $errors, 'values' => $streets];
@@ -228,8 +231,8 @@ function addStreet($conn)
 //add Label
 function addPoly($conn)
 {
-    $errors = array('namePoly' => '', 'coordsPoly' => '', 'typePoly' => '');
-    $polygons = array('namePoly' => '', 'coordsPoly' => '', 'typePoly' => '');
+    $errors = ['namePoly' => '', 'coordsPoly' => '', 'typePoly' => ''];
+    $polygons = ['namePoly' => '', 'coordsPoly' => '', 'typePoly' => ''];
 
     if (empty($_POST['namePoly'])) {
         $errors['namePoly'] = 'Enter a name';
@@ -271,17 +274,19 @@ function addPoly($conn)
 function deleteMarkup($conn)
 {
     $id = mysqli_real_escape_string($conn, $_POST['deleteId']);
+    $streetDel = getStreetById($conn, $id);
 
     if (isset($_POST['deleteLabel'])) {
         $sql = "DELETE FROM maplabels WHERE id = $id";
     } elseif (isset($_POST['deleteBorder'])) {
         $sql = "DELETE FROM mapborders WHERE id = $id";
     } elseif (isset($_POST['deleteStreet'])) {
-        $sql = "DELETE FROM mapstreets WHERE id = $id";
+        $sql = "DELETE FROM mapstreets WHERE id = $id RETURNING coords";
     } elseif (isset($_POST['deletePoly'])) {
         $sql = "DELETE FROM mappolygons WHERE id = $id";
     }
     modifyData($conn, $sql);
+    delete(toNodeArray($streetDel["coords"]));
 }
 
 
@@ -289,7 +294,7 @@ function deleteMarkup($conn)
 
 function countLabels($elements)
 {
-    $labelAmounts = array('province' => 0, 'town' => 0, 'waters' => 0, 'landscape' => 0, 'point' => 0);
+    $labelAmounts = ['province' => 0, 'town' => 0, 'waters' => 0, 'landscape' => 0, 'point' => 0];
     for ($i = 0; $i < count($elements); $i++) {
         switch ($elements[$i]['type']) {
             case 'town':
@@ -307,7 +312,7 @@ function countLabels($elements)
             case 'province':
                 $labelAmounts['province']++;
                 break;
-            default;
+            default:
         }
     }
     return $labelAmounts;
@@ -544,7 +549,9 @@ function countLabels($elements)
                     <?php for ($i = 0; $i < count($streets); $i++): echo "<tr>" ?>
                         <td><?php echo htmlspecialchars($streets[$i]['name']) ?></td>
                         <td><?php echo htmlspecialchars($streets[$i]['color']) ?></td>
-                        <td><?php echo htmlspecialchars(round($streets[$i]['length']), 2) ?>m <?php if ($streets[$i]['totalLength'] > $streets[$i]['length']) echo "(" . round($streets[$i]['totalLength']) . "m)" ?></td>
+                        <td><?php echo htmlspecialchars(round($streets[$i]['length']), 2) ?>m <?php if ($streets[$i]['totalLength'] > $streets[$i]['length']) {
+                            echo "(" . round($streets[$i]['totalLength']) . "m)";
+                        } ?></td>
                         <td><?php echo htmlspecialchars($streets[$i]['id']) ?></td>
                         <td>
                             <form action="<?php $_SERVER['PHP_SELF'] ?>" method="post" id="deleteForm">
