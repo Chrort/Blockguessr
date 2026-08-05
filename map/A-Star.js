@@ -87,6 +87,7 @@ function getIntersection(node, streets, intersections) {
   // return intersections[res[0]].nodes.flatMap((_, i) => i !== res[1] ? [res[0], i] : []);
 }
 //TODO: make a lookup Map
+//TODO: make inetrsctions into intersections: [nodes: [street:x, index: y]]
 function findIntersection(node, intersections) {
   for (let i = 0; i < intersections.length; i++) {
     for (let j = 0; j < intersections[i].nodes.length; j++) {
