@@ -5,3 +5,4 @@ uploads/
 get_pwd.php
 notes.txt
 test/
+.php-cs-fixer.cache

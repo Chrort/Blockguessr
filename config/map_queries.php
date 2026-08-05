@@ -54,7 +54,9 @@ function getStreets(mysqli $conn, string $sort = "name", string $order = "ASC"):
         $streets[$i]['length'] = $length;
     }
 
-    if ($osort == "length") $order == "ASC" ? array_multisort(array_column($streets, 'length'), SORT_ASC, $streets) : array_multisort(array_column($streets, 'length'), SORT_DESC, $streets);
+    if ($osort == "length") {
+        $order == "ASC" ? array_multisort(array_column($streets, 'length'), SORT_ASC, $streets) : array_multisort(array_column($streets, 'length'), SORT_DESC, $streets);
+    }
 
     return $streets;
 }
@@ -68,11 +70,19 @@ function getPolygons(mysqli $conn, string $sort = "name", string $order = "ASC")
 }
 
 //insert label
-function modifyData(mysqli $conn, string $sql): void
+function modifyData(mysqli $conn, string $sql)
 {
     if (mysqli_query($conn, $sql)) {
         header("Location: ./modify.php");
     } else {
         echo 'query error: ' . mysqli_error($conn);
     }
+}
+
+function getStreetById(mysqli $conn, int $id)
+{
+    $stmt = $conn->prepare("SELECT * FROM mapstreets WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
 }
