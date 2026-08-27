@@ -5,7 +5,7 @@ export default function aStar(genesis, terminus, context) {
   const streets = context.streets, intersections = context.intersections;
   const getNodeByIndexString = str => getNodeByIndices(toIndexArray(str), streets);
   let open = new Set(), closed = new Set();
-  const start = getNodeFromString(genesis, streets), destination = getNodeFromString(terminus, streets);
+  const start = getNodeFromString(genesis, streets)[0], destination = getNodeFromString(terminus, streets)[0];
   setF(getNodeByIndexString(start), getNodeByIndexString(start), getNodeByIndexString(destination));
   open.add(start)
 
@@ -13,7 +13,7 @@ export default function aStar(genesis, terminus, context) {
     const current = [...open].reduce((min, cur) => cur.f < min.f ? min : cur);
     open.delete(current);
     closed.add(current);
-    if (current == destination) return getPath(getNodeByIndexString(current), []);
+    if (current == destination) return formatPath(getPath(getNodeByIndexString(current), []));
     let neighbours = getNeighbours(current, streets);
     neighbours.push(...getIntersection(current, streets, intersections));
 
@@ -39,12 +39,13 @@ function getDistance(node1, node2) {
 }
 
 function getNodeByCoords(coords, streets) {
+  let res = [];
   for (let i = 0; i < streets.length; i++) {
     for (let j = 0; j < streets[i].coordinates.length; j++) {
-      if (coords.x == streets[i].coordinates[j].x && coords.y == streets[i].coordinates[j].y) return `${i},${j}`;
+      if (coords.x == streets[i].coordinates[j].x && coords.y == streets[i].coordinates[j].y) res.push(`${i},${j}`);
     }
   }
-  return [];
+  return res;
 }
 
 // "x,y"
@@ -58,6 +59,7 @@ function getNodeByIndices([i, j], streets) {
 }
 
 function getNeighbours(current, streets) {
+
   const [i, j] = toIndexArray(current);
   const currNode = getNodeByIndices([i, j], streets);
   let n = [];
@@ -65,7 +67,7 @@ function getNeighbours(current, streets) {
   if (streets[i].coordinates.length - 1 > j) n.push([i, j + 1]);
   return n.map((neighbour, index) => {
     let c = 1;
-    while (getNodeByIndices(neighbour, streets).x == currNode.x && getNodeByIndices(neighbour, streets).y == currNode.y) {
+    while (getNodeByIndices([i, j + (!(index % 2) ? -1 : 1) * (c + 1)], streets) && getNodeByIndices(neighbour, streets).x == currNode.x && getNodeByIndices(neighbour, streets).y == currNode.y) {
       c++;
       neighbour = [i, j + (!(index % 2) ? -1 : 1) * c];
     }
@@ -83,11 +85,10 @@ function getIntersection(node, streets, intersections) {
   const [i, j] = toIndexArray(node);
   const res = findIntersection(streets[i].coordinates[j], intersections);
   if (!res) return [];
-  return intersections[res[0]].nodes.flatMap((_, i) => i !== res[1] ? `${res[0]},${i}` : []);
-  // return intersections[res[0]].nodes.flatMap((_, i) => i !== res[1] ? [res[0], i] : []);
+  const foundIntersections = intersections[res[0]].nodes.flatMap((e, i) => i !== res[1] ? getNodeByCoords(e, streets) : []).filter(e => e !== node);
+  return foundIntersections;
 }
 //TODO: make a lookup Map
-//TODO: make inetrsctions into intersections: [nodes: [street:x, index: y]]
 function findIntersection(node, intersections) {
   for (let i = 0; i < intersections.length; i++) {
     for (let j = 0; j < intersections[i].nodes.length; j++) {
@@ -101,5 +102,19 @@ function toIndexArray(str) {
   return str.split(",").map(e => Number(e));
 }
 
-const res = aStar("722,-2482", "726,-2483", data);
-console.log(res)
+function toIndexString(indices) {
+  return `${indices.x},${indices.y}`;
+}
+
+function formatPath(path) {
+  let str = "";
+  str += toIndexString(path[0]) + " ";
+  for (let i = 0; i < path.length; i++) {
+    str += toIndexString(path[i]) + " ";
+  }
+  str += toIndexString(path[path.length - 1]);
+  return str.trim();
+}
+
+const res = aStar("722,-2482", "966,-1915", data);
+console.log(res);
