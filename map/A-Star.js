@@ -1,16 +1,25 @@
 export class Path {
+  coordsString = "";
+  streets = [];
+  intersections = [];
+  #path = [];
+  distance = 0;
+  // walking, sprinting 
+  #speeds = [4.317, 7.127];
+  #times = { walking: undefined, sprinting: undefined, horse: undefined };
+  #startTime = performance.now();
+  executionTime = "";
+
   constructor(genesis, terminus) {
-    this.genesis = genesis, this.terminus = terminus;
-    this.coordsString = "";
-    this.streets = [];
-    this.intersections = [];
-    this.path = [];
+    this.genesis = genesis
+    this.terminus = terminus;
   }
 
   formatCoordsString() {
+    this.coordsString = "";
     this.coordsString += this.genesis + " ";
-    for (let i = 0; i < this.path.length; i++) {
-      this.coordsString += toCoordsString(this.path[i]) + " ";
+    for (let i = 0; i < this.#path.length; i++) {
+      this.coordsString += toCoordsString(this.#path[i]) + " ";
     }
     this.coordsString += this.terminus;
     return this.coordsString.trim();
@@ -18,20 +27,20 @@ export class Path {
 
   setPath(endNode) {
     let node = endNode;
-    this.path.push(endNode);
-    while (node.prev) {
+    while (node) {
+      this.#path.push(node);
       node = node.prev;
-      this.path.unshift(node);
     }
+    this.#path.reverse();
   }
 
   setIntersections(intersections) {
-    for (let i = 0; i < this.path.length; i++) {
-      let inter = findIntersection(this.path[i], intersections);
+    for (let i = 0; i < this.#path.length; i++) {
+      let inter = findIntersection(this.#path[i], intersections);
       if (inter) {
         let next = intersections[inter[0]].nodes.some(e =>
-          e.x == this.path[i + 1]?.x &&
-          e.y == this.path[i + 1]?.y
+          e.x == this.#path[i + 1]?.x &&
+          e.y == this.#path[i + 1]?.y
         );
         if (next) this.intersections.push(intersections[inter[0]]);
       }
@@ -39,6 +48,7 @@ export class Path {
   }
 
   setStreets(start, destination, streets) {
+    this.executionTime = performance.now() - this.#startTime;
     this.streets = this.intersections.slice(0, -1).map((intersection, i) => {
       const next = this.intersections[i + 1];
       return intersection.streets.find(street => next.streets.includes(street));
@@ -47,9 +57,32 @@ export class Path {
     this.streets.push(streets[toIndexArray(destination)[0]].name);
   }
 
+  formatTime(time, unit = "s") {
+    const units = {
+      ms: 0.001, s: 1, m: 60, h: 3600, d: 86400
+    }
+    const seconds = time * units[unit];
+    return `${Math.floor(seconds / 3600)}:${String(Math.floor(seconds / 60) % 60).padStart(2, "0")}:${String(Math.floor(seconds % 60)).padStart(2, "0")}`
+  }
+
+  setHorseTime(movementStat) {
+    this.#times.horse = this.formatTime(this.distance / (movementStat * 43.17));
+  }
+
+  setTimes() {
+    this.#times.walking = this.formatTime(this.distance / this.#speeds[0]);
+    this.#times.sprinting = this.formatTime(this.distance / this.#speeds[1]);
+  }
+
+  get times() {
+    return this.#times;
+  }
+
   populatePath(endNode, start, destination, intersections, streets) {
     endNode = getNodeByIndices(toIndexArray(endNode), streets)
     this.setPath(endNode);
+    this.distance = this.#path.at(-1).g;
+    this.setTimes();
     this.formatCoordsString();
     this.setIntersections(intersections, streets);
     this.setStreets(start, destination, streets);
@@ -57,7 +90,16 @@ export class Path {
 }
 
 export default function aStar(genesis, terminus, context) {
-  const streets = context.streets, intersections = context.intersections, path = new Path(genesis, terminus);
+  const streets = (streets => {
+    for (const street of streets) {
+      for (const node of street.coordinates) {
+        node.g = Infinity, node.f = Infinity, node.prev = Infinity;
+      }
+    }
+    return streets;
+
+  })(context.streets);
+  const intersections = context.intersections, path = new Path(genesis, terminus);
   const getNodeByIndexString = str => getNodeByIndices(toIndexArray(str), streets);
   //TODO: open into PriorityQueue?
   let open = new Set(), closed = new Set();
@@ -116,7 +158,7 @@ function getNodeByCoords(coords, streets) {
   let res = [];
   for (let i = 0; i < streets.length; i++) {
     for (let j = 0; j < streets[i].coordinates.length; j++) {
-      if (coords.x == streets[i].coordinates[j].x && coords.y == streets[i].coordinates[j].y) res.push(`${i},${j}`);
+      if (coords.x == streets[i].coordinates[j].x && coords.y == streets[i].coordinates[j].y) res.push(`${i},${j} `);
     }
   }
   return res;
@@ -144,7 +186,7 @@ function getNeighbours(current, streets) {
       c++;
       neighbour = [i, j + (!(index % 2) ? -1 : 1) * c];
     }
-    return `${neighbour[0]},${neighbour[1]}`;
+    return `${neighbour[0]},${neighbour[1]} `;
   });
 }
 
@@ -171,7 +213,7 @@ function toIndexArray(str) {
 }
 
 function toCoordsString(node) {
-  return `${node.x},${node.y}`;
+  return `${node.x},${node.y} `;
 }
 
 
@@ -183,7 +225,7 @@ export function findNearestStreetCoords(inputCoords, streets) {
   for (let i = 0; i < streets.length; i++) {
     for (let j = 0; j < streets[i].coordinates.length; j++) {
       const node = streets[i].coordinates[j];
-      if (node.x == coords.x && node.y == coords.y) return `${i},${j}`;
+      if (node.x == coords.x && node.y == coords.y) return `${i},${j} `;
       let tempDistance = getDistance(node, coords);
       if (tempDistance < distance) {
         nearest = [i, j];
@@ -191,5 +233,5 @@ export function findNearestStreetCoords(inputCoords, streets) {
       }
     }
   }
-  return `${nearest[0]},${nearest[1]}`;
+  return `${nearest[0]},${nearest[1]} `;
 }
