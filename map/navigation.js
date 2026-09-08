@@ -44,9 +44,10 @@ import data from "./streets.json" with  { type: "json"}
 //   startInput.value = "";
 //   destinationInput.value = "";
 
-const path = aStar("-2429,-2653", "1114,887", data);
+const path = aStar("-2441,-2623", "1085,998", data);
 // for (let i = 0; i < path.intersections.length; i++) {
 //   console.log(`${path.intersections[i].streets[0]}, ${path.intersections[i].streets[1]} | ${path.intersections[i].nodes[0].x},${path.intersections[i].nodes[0].y}  ${path.intersections[i].nodes[1].x},${path.intersections[i].nodes[1].y}`);
 // }
+path.setHorseTime(0.337);
 console.log(path);
 // });
