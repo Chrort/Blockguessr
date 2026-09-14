@@ -19,7 +19,7 @@ class Intersection {
 }
 
 const args = process.argv.slice(2).map(Number);
-// write("./inter.json", new Intersection(...args));
+write("./inter.json", new Intersection(...args));
 
 function mvIntersections() {
   BigData.intersections = data.intersections;
