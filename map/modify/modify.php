@@ -281,12 +281,12 @@ function deleteMarkup($conn)
     } elseif (isset($_POST['deleteBorder'])) {
         $sql = "DELETE FROM mapborders WHERE id = $id";
     } elseif (isset($_POST['deleteStreet'])) {
-        $sql = "DELETE FROM mapstreets WHERE id = $id RETURNING coords";
+        $sql = "DELETE FROM mapstreets WHERE id = $id";
+        delete(toNodeArray($streetDel["coords"]));
     } elseif (isset($_POST['deletePoly'])) {
         $sql = "DELETE FROM mappolygons WHERE id = $id";
     }
     modifyData($conn, $sql);
-    delete(toNodeArray($streetDel["coords"]));
 }
 
 

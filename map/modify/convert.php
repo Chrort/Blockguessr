@@ -24,28 +24,34 @@ function toNodeArray($street)
     return $result;
 }
 
-/**
- * @param Node[] $nodes
- */
 function matchCoords($coords1, array $nodes, $depth)
 {
-    $count = 0;
+    if (count($coords1) < $depth || count($nodes) < $depth) {
+        return false;
+    }
+
     for ($i = 0; $i < $depth; $i++) {
-        if ($coords1[$i]["x"] == $nodes[$i]->x && $coords1[$i]["y"] == $nodes[$i]->y) {
-            $count++;
+        if ($coords1[$i]["x"] != $nodes[$i]->x || $coords1[$i]["y"] != $nodes[$i]->y) {
+            return false;
         }
     }
-    return $count == $depth;
+    return true;
 }
 
 function write($streetPHP)
 {
-    $json = file_get_contents(__dIR__ . "/../streets.json");
+    $json = file_get_contents(__DIR__ . "/../streets.json");
+    if ($json === false) {
+        throw new RuntimeException("Could not read streets.json");
+    }
     $data = json_decode($json, true);
+    if ($data === null && json_last_error() !== JSON_ERROR_NONE || !isset($data["streets"]) || !is_array($data["streets"])) {
+        throw new RuntimeException("Invalid JSON: " . json_last_error_msg());
+    }
 
     $street = new Street($streetPHP["nameStreet"], $streetPHP["colorStreet"], toNodeArray($streetPHP["coordsStreet"]));
     $data["streets"][] = $street;
-    file_put_contents(__DIR__ . "/../streets.json", json_encode($data, JSON_PRETTY_PRINT));
+    file_put_contents(__DIR__ . "/../streets.json", json_encode($data, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR));
 }
 
 function delete($coords)
@@ -63,18 +69,26 @@ function delete($coords)
 
 function find($coords, $streets, $depth = 5)
 {
-    $res = [];
-    $size = count($streets);
-    for ($i = 0; $i < $size; $i++) {
-        if (matchCoords($streets[$i]["coordinates"], $coords, $depth)) {
-            $res[$i] = $streets[$i];
+    while ($depth <= count($coords)) {
+        $matches = [];
+
+        foreach ($streets as $index => $street) {
+            if (matchCoords($coords, $street["coordinates"], $depth)) {
+                $matches[$index] = $street;
+            }
         }
+
+        if (count($matches) === 1) {
+            return array_key_first($matches);
+        }
+
+        if (count($matches) === 0) {
+            return null;
+        }
+
+        $streets = $matches;
+        $depth++;
     }
-    if (count($res) == 1) {
-        return array_key_first($res);
-    }
-    if ($depth == count($res) || count($res) == 0) {
-        return null;
-    }
-    return find($coords, $res, $depth + 1);
+
+    return null;
 }

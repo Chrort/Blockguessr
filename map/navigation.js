@@ -1,6 +1,6 @@
 // import { map } from './map.js';
 import aStar from "./A-Star.js";
-import data from "./streets.json" with  { type: "json"}
+import data from "./streets.json" with {type: "json"};
 // const data = await fetch("./streets.json").then(res => res.json());
 // const navigationBar = document.querySelector("#navigationBar");
 // const navigateBtn = document.querySelector("#navigateBtn");
@@ -43,11 +43,9 @@ import data from "./streets.json" with  { type: "json"}
 //
 //   startInput.value = "";
 //   destinationInput.value = "";
-
-const path = aStar("-2441,-2623", "1085,998", data);
-// for (let i = 0; i < path.intersections.length; i++) {
-//   console.log(`${path.intersections[i].streets[0]}, ${path.intersections[i].streets[1]} | ${path.intersections[i].nodes[0].x},${path.intersections[i].nodes[0].y}  ${path.intersections[i].nodes[1].x},${path.intersections[i].nodes[1].y}`);
-// }
-path.setHorseTime(0.337);
-console.log(path);
+//
+let path = aStar("-2441,-2623", "1085,998", data);
+console.log(path.streets);
+path = aStar("704,-2446", "1677,1500", data);
+console.log(path.streets);
 // });
