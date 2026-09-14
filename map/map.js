@@ -10,6 +10,7 @@ export let map = new Map(mapDiv, [-6, 4, -6, 4]);
 window.onload = async () => {
   map.genMap();
   await map.fetchData();
+  console.log(map.streetDataArray);
   map.drawLabels(true);
   map.adaptPanoLinks();
   map.adaptStreets();

@@ -125,6 +125,7 @@ section{
     border-radius: 10px;
     font-size: 2vh;
     border: 2px inset black;
+    padding-left: 4px;
 }
 
 #navigateBtn, #errorLog{

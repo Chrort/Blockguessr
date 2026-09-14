@@ -70,85 +70,58 @@ function getFullMapName(string $provinceAbbr): string
     switch ($provinceAbbr) {
         case "AM":
             return "Amazonien";
-            break;
         case "AN":
             return "Außengebiet Nord";
-            break;
         case "EG":
             return "Eglynas";
-            break;
         case "EL":
             return "Elarion";
-            break;
         case "FM":
             return "Formosa";
-            break;
         case "GM":
             return "Grönmark";
-            break;
         case "GL":
             return "Gultland";
-            break;
         case "KT":
             return "Khwati";
-            break;
         case "MG":
             return "Mägismaa";
-            break;
         case "MT":
             return "Maastik";
-            break;
         case "MW":
             return "Morwyn";
-            break;
         case "NR":
             return "Naryn";
-            break;
         case "NP":
             return "Nationalpark";
-            break;
         case "NF":
             return "Nordisches Flachland";
-            break;
         case "PH":
             return "Pahia";
-            break;
         case "PV":
             return "Pieva";
-            break;
         case "PL":
             return "Polynesien";
-            break;
         case "RO":
             return "Reota";
-            break;
         case "SM":
             return "Samudra";
-            break;
         case "SL":
             return "Südlande";
-            break;
         case "SH":
             return "Sehloa";
-            break;
         case "SV":
             return "Selvameer";
-            break;
         case "SA":
             return "Soala";
-            break;
         case "TW":
             return "Terra West";
-            break;
         case "UP":
             return "Upland";
-            break;
         case "UT":
             return "Uthlande";
-            break;
         case "WL":
             return "Weißes Land";
-            break;
         default:
             return "";
     }

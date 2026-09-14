@@ -27,7 +27,6 @@ const fillImgArray = () => {
 const changeImg = () => {
     document.slideshow.src = imgArray[i - 1];
     i++;
-
     i > slideshowImgCount ? i = 1 : null;
 }
 

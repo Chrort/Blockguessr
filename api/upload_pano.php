@@ -1,7 +1,6 @@
 <?php
 
 require __DIR__ . '/../vendor/autoload.php';
-//require __DIR__ . '/./world_data.php';
 
 use Google\Cloud\Storage\StorageClient;
 
