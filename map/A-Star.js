@@ -89,7 +89,7 @@ export class Path {
   }
 }
 
-export default function aStar(genesis, terminus, context) {
+export default async function aStar(genesis, terminus, context) {
   const streets = (streets => {
     for (const street of streets) {
       for (const node of street.coordinates) {

@@ -298,6 +298,7 @@ export class Map{
     this.drawLabels(false);
     this.adaptBorders();
     this.adaptStreets();
+    this.adaptRoute();
     this.adaptPanoLinks();
     this.adaptPolygonsText();
     this.adaptIdLine();
@@ -365,6 +366,13 @@ export class Map{
     const streetLines = document.getElementsByClassName("streetPolyline");
     [].forEach.call(streetLines, (e) => {
       e.style.strokeWidth = 4 / this.currentZoomLevel**.6;
+    })
+  }
+
+  adaptRoute(){
+    const routes = document.getElementsByClassName("routes");
+    [].forEach.call(routes, (e) => {
+      e.style.strokeWidth = 8 / this.currentZoomLevel**.6;
     })
   }
 

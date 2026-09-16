@@ -67,6 +67,10 @@ section{
     padding: 5px;
 }
 
+abbr{
+    text-decoration: none;
+}
+
 .borderSvg{
     pointer-events: none;
     position: absolute;
@@ -76,6 +80,14 @@ section{
 .borderPolyline{
     stroke-width: 10;
     stroke-dasharray: 3 2;
+}
+
+.routes{
+    stroke-width: 8;
+}
+
+.offroad{
+    stroke: plum;
 }
 
 #goBack{
@@ -128,6 +140,14 @@ section{
     padding-left: 4px;
 }
 
+#deleteRoute{
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
 #navigateBtn, #errorLog{
     cursor: pointer;
     padding: 5px;
@@ -139,6 +159,55 @@ section{
 
 #navigateBtn:hover{
     background-color: rgb(0, 172, 0);
+}
+
+#routeInfo{
+    display: none;
+    z-index: 10;
+    align-items: end;
+    flex-direction: column;
+    gap: 5px;
+    background: #FAFAFA;
+    background: linear-gradient(104deg,#fafafa 0%, #a4d5e0 100%);
+    padding: 10px;
+    position: absolute;
+    left: 2vh;
+    bottom: -2vh;
+    font-size: 2vh;
+    border-radius: 10px;
+    transform: translateY(-50%);
+    opacity: 0.9;
+}
+
+#headerRoute{
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    flex-direction: row;
+    gap: 20px;
+}
+
+#routeSvg{
+    position: absolute;
+    align-self: flex-start;
+    bottom: 10px;
+}
+
+#streetsInfo{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    font-size: 3vh;
+}
+
+#streetsInfo>span{
+    padding: 0.3vh;
+    border-radius: 1vh;
+}
+
+#executionTimeInfo{
+    color: rgb(81, 81, 81);
+    text-decoration: none;
 }
 
 #errorLog{
