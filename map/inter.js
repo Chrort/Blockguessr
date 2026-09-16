@@ -1,3 +1,7 @@
+//INFO: node inter copies intersections from inter.json into streets.json
+//node inter s1 s2 s1.x s1.y s2.x s2.y adds {sreets:[s1,s2], nodes: [{s1.x, s1.y}, {s2.x, s2.y}]} to inter.json
+//node inter s1 s2 s.x s.y adds adds {sreets:[s1,s2], nodes: [{s1.x, s1.y}, {s1.x, s1.y}]} to inter.json
+
 import BigData from "./streets.json" with {type: "json"};
 import data from "./inter.json" with {type: "json"}
 import fs from "node:fs/promises";
@@ -19,7 +23,8 @@ class Intersection {
 }
 
 const args = process.argv.slice(2).map(Number);
-// write("./inter.json", new Intersection(...args));
+if (args.length > 0) write("./inter.json", new Intersection(...args));
+else mvIntersections();
 
 function mvIntersections() {
   BigData.intersections = data.intersections;
