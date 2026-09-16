@@ -22,8 +22,6 @@ class Intersection {
   }
 }
 
-//INFO: to add Intersection ".../map node inter street1.name street2.name street1.x street1.y street2.x street2.y";
-//or if street1.coords = street2.coords: ".../map node inter street1.name street2.name street.x street.y"
 const args = process.argv.slice(2).map(Number);
 if (args.length > 0) write("./inter.json", new Intersection(...args));
 else mvIntersections();
