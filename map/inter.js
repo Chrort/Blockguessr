@@ -92,4 +92,3 @@ function searchByStreets(s1, s2) {
   }
   return res;
 }
->>>>>>> e8f6b9d8bd2a0fc1683856b29b65948d6da680ad

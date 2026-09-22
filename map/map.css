@@ -164,16 +164,6 @@ abbr{
 #routeInfo{
     display: none;
     z-index: 10;
-<<<<<<< HEAD
-    align-items: center;
-    flex-direction: column;
-    background: #FAFAFA;
-    background: linear-gradient(104deg,rgba(250, 250, 250, 1) 0%, rgba(180, 220, 229, 1) 0%, rgba(164, 213, 224, 1) 100%);
-    padding: 10px;
-    position: absolute;
-    left: 2vh;
-    bottom: 2vh;
-=======
     align-items: end;
     flex-direction: column;
     gap: 5px;
@@ -184,14 +174,11 @@ abbr{
     left: 2vh;
     bottom: -2vh;
     font-size: 2vh;
->>>>>>> e8f6b9d8bd2a0fc1683856b29b65948d6da680ad
     border-radius: 10px;
     transform: translateY(-50%);
     opacity: 0.9;
 }
 
-<<<<<<< HEAD
-=======
 #headerRoute{
     display: flex;
     justify-content: center;
@@ -223,7 +210,6 @@ abbr{
     text-decoration: none;
 }
 
->>>>>>> e8f6b9d8bd2a0fc1683856b29b65948d6da680ad
 #errorLog{
     display: none;
 }

@@ -58,13 +58,6 @@ $labels = getLabels($conn);
             <svg xmlns="http://www.w3.org/2000/svg" height="4vh" viewBox="0 -960 960 960" width="4vh" fill="#000000" id="navigateSvg">
                 <path d="m319-280 161-73 161 73 15-15-176-425-176 425 15 15ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
             </svg>
-<<<<<<< HEAD
-            <div id="deleteRoute">
-                <svg xmlns="http://www.w3.org/2000/svg" height="4vh" viewBox="0 -960 960 960" width="4vh" fill="#ff0000">
-                    <path d="m336-280 144-144 144 144 56-56-144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144 56 56ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
-                </svg>
-            </div>
-=======
             <abbr title="Delete Route">
                 <div id="deleteRoute">
                     <svg xmlns="http://www.w3.org/2000/svg" height="4vh" viewBox="0 -960 960 960" width="4vh" fill="#ff0000">
@@ -72,7 +65,6 @@ $labels = getLabels($conn);
                     </svg>
                 </div>
             </abbr>
->>>>>>> e8f6b9d8bd2a0fc1683856b29b65948d6da680ad
             <label for="start">From: </label>
             <input list="labels" type="text" name="start" id="start" placeholder="Al-Sahrawia">
             <label for="destination">To: </label>
@@ -287,12 +279,6 @@ $labels = getLabels($conn);
             </section>
         </div>
         <div id="routeInfo">
-<<<<<<< HEAD
-            <div id="distanceInfo">433m</div>
-            <div id="streetsInfo">2 -> 4</div>
-            <div id="travelTimeInfo">4.2s</div>
-            <div id="executionTimeInfo">453ms</div>
-=======
             <svg xmlns="http://www.w3.org/2000/svg" height="4vh" viewBox="0 -960 960 960" width="4vh" fill="#000000" id="routeSvg">
                 <path d="M270-186.17q-42-42.18-42-101.4V-581q-37-12-60.5-44T144-696q0-50 35.5-85t85-35q49.5 0 84.5 35t35 85q0 41-24 72t-60 42v294.06q0 29.67 21.21 50.81 21.21 21.13 51 21.13T423-237.15q21-21.15 21-50.85v-384q0-60 42-102t102-42q60 0 102 42t42 102v294q36 11 60 42t24 72q0 50-35 85t-85 35q-49 0-84.5-35T576-264q0-38 24-71t60-43.77v-293.6Q660-702 638.79-723q-21.21-21-51-21T537-722.85Q516-701.7 516-672v384q0 60-42 102t-102 42q-60 0-102-42.17ZM264-648q20.4 0 34.2-13.8Q312-675.6 312-696q0-20.4-13.8-34.2Q284.4-744 264-744q-20.4 0-34.2 13.8Q216-716.4 216-696q0 20.4 13.8 34.2Q243.6-648 264-648Zm432 432q20.4 0 34.2-13.8Q744-243.6 744-264q0-20.4-13.8-34.2Q716.4-312 696-312q-20.4 0-34.2 13.8Q648-284.4 648-264q0 20.4 13.8 34.2Q675.6-216 696-216ZM264-696Zm432 432Z" />
             </svg>
@@ -318,7 +304,6 @@ $labels = getLabels($conn);
             <abbr title="Calculation time">
                 <div id="executionTimeInfo">Failed</div>
             </abbr>
->>>>>>> e8f6b9d8bd2a0fc1683856b29b65948d6da680ad
         </div>
         <div id="coords">X: - | Y: -</div>
         <div id="escape">Press ESC to leave mode</div>
