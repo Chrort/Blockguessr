@@ -3,8 +3,8 @@
 //node inter -i s1 s2 s.x s.y adds adds {sreets:[s1,s2], nodes: [{s1.x, s1.y}, {s1.x, s1.y}]} to inter.json
 //node inter -s -streets s1...sn outputs all intersections that include s1...sn in intersection.streets in any order
 
-import BigData from "./streets.json" with {type: "json"};
-import data from "./inter.json" with {type: "json"}
+import BigData from "../streets.json" with {type: "json"};
+import data from "../inter.json" with {type: "json"}
 import fs from "node:fs/promises";
 
 async function write(filepath, newData) {
@@ -40,7 +40,7 @@ switch (mode) {
     break;
   case "i":
     const args = process.argv.slice(3).map(Number);
-    if (args.length >= 4) write("./inter.json", new Intersection(...args));
+    if (args.length >= 4) write("../inter.json", new Intersection(...args));
     else throw new Error("expected at least 4 arguments for insert mode. Do node inter --help for help");
     break;
   case "m":
@@ -80,7 +80,7 @@ node inter -s -streets s1 ... sn      Outputs all intersections whose streets in
 
 function mvIntersections() {
   BigData.intersections = data.intersections;
-  fs.writeFile("./streets.json", JSON.stringify(BigData, null, 2));
+  fs.writeFile("../streets.json", JSON.stringify(BigData, null, 2));
 }
 
 function searchByStreets(s1, s2) {
